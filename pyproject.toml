@@ -6,26 +6,49 @@ readme = "README.md"
 authors = [
     { name = "Rudi Kershaw", email = "alexander_kershaw@hotmail.co.uk" }
 ]
-requires-python = ">=3.13"
+requires-python = ">=3.12"
 dependencies = [
-    "numpy>=2.0.0",
+    "numpy>=1.24.0",
 ]
 license = { text = "MIT" }
 keywords = ["conformal-prediction", "uncertainty", "machine-learning"]
-
-[project.urls]
-Homepage = "https://github.com/rudikershaw/conformal"
-Repository = "https://github.com/rudikershaw/conformal"
-Issues = "https://github.com/rudikershaw/conformal/issues"
-
 classifiers = [
-    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Topic :: Scientific/Engineering",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
 ]
+
+[project.urls]
+Homepage = "https://github.com/rudikershaw/conformal"
+Repository = "https://github.com/rudikershaw/conformal"
+Issues = "https://github.com/rudikershaw/conformal/issues"
+
+[dependency-groups]
+dev = [
+    "nox>=2024.4.15",
+    "ruff>=0.6.0",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "N",   # pep8-naming
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "SIM", # flake8-simplify
+]
+ignore = []
 
 [build-system]
 requires = ["uv_build>=0.11.6,<0.12.0"]

@@ -16,13 +16,19 @@ The project was initialised with uv 0.11.6. You can verify that you have 0.11 or
    cd conformal
    ```
 
-2. Install dependencies:
+2. Install dependencies (including dev dependencies):
    ```bash
-   uv sync
+   uv sync --group dev
    ```
 
-3. Run commands using `uv run`:
-   ```bash
-   uv run python -m pytest
-   uv run python
-   ```
+## Development Workflow
+
+This project uses [Nox](https://nox.thea.codes/) for task running. All development tasks (linting, formatting, testing) are defined as Nox sessions.
+
+### Running checks
+
+```bash
+# Run all default checks.
+uv run nox
+```
+You can view the individual nox tasks in the `noxfile.py`.
