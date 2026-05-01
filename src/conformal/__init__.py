@@ -1,5 +1,4 @@
-"""
-Conformal prediction for practitioners.
+"""Conformal prediction for practitioners.
 
 A minimal, framework-agnostic library for producing statistically guaranteed
 uncertainty estimates from ML models.

@@ -21,7 +21,7 @@ def format_check(session):
 
 
 @nox.session
-def format(session):
+def format_apply(session):
     """Format code with ruff."""
     session.install("ruff")
     session.run("ruff", "format", "src", "noxfile.py")

@@ -47,8 +47,20 @@ select = [
     "B",   # flake8-bugbear
     "C4",  # flake8-comprehensions
     "SIM", # flake8-simplify
+    "D",   # pydocstyle (docstrings)
+    "T20", # flake8-print
+    "RUF", # ruff-specific rules
+    "ARG", # flake8-unused-arguments
+    "PTH", # flake8-use-pathlib
+    "S",   # bandit security
+    "A",   # flake8-builtins
+    "ERA", # eradicate commented-out code
+    "PL",  # pylint
 ]
-ignore = []
+ignore = [
+    "D203",  # Conflicts with D211 (PEP 257: no blank line before class)
+    "D213",  # Conflicts with D212 (PEP 257: summary on first line)
+]
 
 [build-system]
 requires = ["uv_build>=0.11.6,<0.12.0"]
