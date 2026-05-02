@@ -3,7 +3,7 @@
 import nox
 
 # Default sessions to run when just typing 'nox'
-nox.options.sessions = ["lint", "format_check"]
+nox.options.sessions = ["lint", "format_check", "type_check"]
 
 
 @nox.session
@@ -25,6 +25,14 @@ def format_apply(session):
     """Format code with ruff."""
     session.install("ruff")
     session.run("ruff", "format", "src", "noxfile.py")
+
+
+@nox.session
+def type_check(session):
+    """Run mypy type checker."""
+    session.install("mypy")
+    session.install(".")
+    session.run("mypy", "src")
 
 
 @nox.session(python=["3.12", "3.13"])

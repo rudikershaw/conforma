@@ -30,11 +30,21 @@ Issues = "https://github.com/rudikershaw/conformal/issues"
 dev = [
     "nox>=2024.4.15",
     "ruff>=0.6.0",
+    "mypy>=1.20.0",
 ]
 
 [tool.ruff]
 line-length = 120
 target-version = "py312"
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+warn_unreachable = true
+disallow_untyped_defs = true
+disallow_any_unimported = true
 
 [tool.ruff.lint]
 select = [
