@@ -28,14 +28,26 @@ Issues = "https://github.com/rudikershaw/conformal/issues"
 
 [dependency-groups]
 dev = [
-    "nox>=2024.4.15",
-    "ruff>=0.6.0",
+    "nox>=2026.04.10",
+    "nox-uv>=0.7.1",
+]
+lint = [
+    "ruff>=0.15.10",
     "mypy>=1.20.0",
+]
+test = [
+    "pytest>=9.0.0",
 ]
 
 [tool.ruff]
 line-length = 120
 target-version = "py312"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
 
 [tool.mypy]
 python_version = "3.12"

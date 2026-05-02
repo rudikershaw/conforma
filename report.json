@@ -1,0 +1,35 @@
+{
+  "result": 1,
+  "sessions": [
+    {
+      "args": {},
+      "name": "lint",
+      "result": "success",
+      "result_code": 1,
+      "signatures": [
+        "lint"
+      ],
+      "duration": 5.75821187501424
+    },
+    {
+      "args": {},
+      "name": "tests",
+      "result": "success",
+      "result_code": 1,
+      "signatures": [
+        "tests-3.12"
+      ],
+      "duration": 6.961851458007004
+    },
+    {
+      "args": {},
+      "name": "tests",
+      "result": "success",
+      "result_code": 1,
+      "signatures": [
+        "tests-3.13"
+      ],
+      "duration": 3.8288367499771994
+    }
+  ]
+}

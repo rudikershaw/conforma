@@ -1,43 +1,44 @@
 """Nox sessions for testing, linting, and formatting."""
 
-import nox
+from nox import Session, options
+from nox_uv import session
 
-# Default sessions to run when just typing 'nox'
-nox.options.sessions = ["lint", "format_check", "type_check"]
+options.default_venv_backend = "uv"
+options.reuse_existing_virtualenvs = True
+options.sessions = ["lint", "tests"]
 
 
-@nox.session
-def lint(session):
+@session(uv_no_install_project=True, uv_quiet=True, uv_groups=["lint", "dev"])
+def lint(session: Session) -> None:
     """Run ruff linter."""
-    session.install("ruff")
     session.run("ruff", "check", "src", "noxfile.py")
+    session.run("ruff", "format", "--check", "--diff", "src", "noxfile.py")
+    session.run("mypy", "src", "noxfile.py")
 
 
-@nox.session
-def format_check(session):
-    """Check code formatting with ruff."""
-    session.install("ruff")
-    session.run("ruff", "format", "--check", "src", "noxfile.py")
-
-
-@nox.session
-def format_apply(session):
+@session(uv_no_install_project=True, uv_quiet=True, uv_groups=["lint"])
+def format_apply(session: Session) -> None:
     """Format code with ruff."""
-    session.install("ruff")
     session.run("ruff", "format", "src", "noxfile.py")
 
 
-@nox.session
-def type_check(session):
-    """Run mypy type checker."""
-    session.install("mypy")
-    session.install(".")
-    session.run("mypy", "src")
+@session(python=["3.12", "3.13"], uv_quiet=True, uv_groups=["test"])
+def tests(session: Session) -> None:
+    """Run tests with appropriate numpy version for each Python version.
 
+    - Python 3.12: numpy 1.24+ (oldest supported)
+    - Python 3.13: numpy 2.0+ (only version with 3.13 wheels)
+    """
+    is3_12 = session.python == "3.12"
+    session.install("pytest", "numpy>=1.24.0,<2.0.0" if is3_12 else "numpy>=2.0.0,<3.0.0")
 
-@nox.session(python=["3.12", "3.13"])
-def tests(session):
-    """Run tests (placeholder - pytest not yet configured)."""
-    session.install(".")
-    # Will add pytest here later
-    session.run("python", "-c", "import conformal; print(f'conformal v{conformal.__version__}')")
+    # Validate that we have the expected numpy version for this Python version
+    numpy_version = session.run("python", "-c", "import numpy; print(numpy.__version__)", silent=True)
+    if not numpy_version:
+        session.error("Failed to detect numpy version")
+    numpy_version = numpy_version.strip()
+    expected_major = 1 if is3_12 else 2
+    if not numpy_version.startswith(f"{expected_major}."):
+        session.error(f"Expected numpy {expected_major}.x but got {numpy_version}")
+
+    session.run("pytest", "tests", "-v")
