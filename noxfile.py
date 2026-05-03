@@ -5,7 +5,7 @@ from nox_uv import session
 
 options.default_venv_backend = "uv"
 options.reuse_existing_virtualenvs = True
-options.sessions = ["lint", "tests"]
+options.sessions = ["lint", "security", "tests"]
 
 
 @session(uv_no_install_project=True, uv_quiet=True, uv_groups=["lint", "dev"])
@@ -20,6 +20,12 @@ def lint(session: Session) -> None:
 def format_apply(session: Session) -> None:
     """Format code with ruff."""
     session.run("ruff", "format", "src", "noxfile.py")
+
+
+@session(uv_no_install_project=True, uv_quiet=True, uv_groups=["lint"])
+def security(session: Session) -> None:
+    """Audit dependencies for security vulnerabilities."""
+    session.run("pip-audit")
 
 
 @session(python=["3.12", "3.13"], uv_quiet=True, uv_groups=["test"])
@@ -41,4 +47,4 @@ def tests(session: Session) -> None:
     if not numpy_version.startswith(f"{expected_major}."):
         session.error(f"Expected numpy {expected_major}.x but got {numpy_version}")
 
-    session.run("pytest", "tests", "-v")
+    session.run("pytest", "tests", "-v", "--cov=conformal", "--cov-report=term-missing", "--cov-report=html")

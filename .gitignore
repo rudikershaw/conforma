@@ -50,6 +50,7 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
+.benchmarks/
 
 # Translations
 *.mo
@@ -208,3 +209,6 @@ __marimo__/
 
 # Nox
 report.json
+
+# Mac
+.DS_Store
