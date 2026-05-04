@@ -16,8 +16,8 @@ ONE_DIMENSION = 1
 
 
 def _calibrate[F: np.floating[Any], T: np.generic](
-    cal_predictions: NDArray[F],
-    y_cal: NDArray[T],
+    calibration_predictions: NDArray[F],
+    true_labels: NDArray[T],
     score_fn: Callable[[NDArray[F], NDArray[T]], NDArray[F]],
 ) -> NDArray[F]:
     """Compute and sort nonconformity scores from a calibration set.
@@ -27,12 +27,12 @@ def _calibrate[F: np.floating[Any], T: np.generic](
 
     Parameters
     ----------
-    cal_predictions : NDArray
+    calibration_predictions : NDArray
         Model predictions on the calibration set.
         Shape depends on the task (see specific calibration functions).
-    y_cal : NDArray
+    true_labels : NDArray
         True values for the calibration set.
-        Shape must be compatible with cal_predictions for the score function.
+        Shape must be compatible with calibration_predictions for the score function.
     score_fn : Callable
         Function that computes nonconformity scores given predictions and true values.
         Signature: (predictions, true_values) -> scores
@@ -56,13 +56,13 @@ def _calibrate[F: np.floating[Any], T: np.generic](
 
     """
     # Basic validation: ensure first dimension matches
-    n_cal = cal_predictions.shape[0]
-    if y_cal.shape[0] != n_cal:
-        msg = f"Shape mismatch: cal_predictions has {n_cal} examples but y_cal has {y_cal.shape[0]}"
+    n_cal = calibration_predictions.shape[0]
+    if true_labels.shape[0] != n_cal:
+        msg = f"Shape mismatch: calibration_predictions has {n_cal} examples but true_labels has {true_labels.shape[0]}"
         raise ValueError(msg)
 
     # Compute nonconformity scores
-    scores: NDArray[F] = score_fn(cal_predictions, y_cal)
+    scores: NDArray[F] = score_fn(calibration_predictions, true_labels)
 
     # Validate scores shape: must be 1D or 2D with first dimension matching n_cal
     if scores.ndim not in (1, 2):
@@ -78,7 +78,7 @@ def _calibrate[F: np.floating[Any], T: np.generic](
 
 
 def calibrate_classifier[F: np.floating[Any], I: np.integer[Any]](
-    cal_probabilities: NDArray[F], y_cal: NDArray[I]
+    calibration_probabilities: NDArray[F], true_labels: NDArray[I]
 ) -> NDArray[F]:
     """Calibrate a conformal classifier using the standard nonconformity score.
 
@@ -87,11 +87,11 @@ def calibrate_classifier[F: np.floating[Any], I: np.integer[Any]](
 
     Parameters
     ----------
-    cal_probabilities : NDArray
+    calibration_probabilities : NDArray
         Predicted probabilities on the calibration set.
         Shape: (n_calibration_examples, n_classes)
         Must sum to 1 across axis 1 (i.e., valid probability distributions).
-    y_cal : NDArray
+    true_labels : NDArray
         True class labels for the calibration set.
         Shape: (n_calibration_examples,)
         Must contain integer class indices in range [0, n_classes).
@@ -106,11 +106,11 @@ def calibrate_classifier[F: np.floating[Any], I: np.integer[Any]](
     --------
     >>> import numpy as np
     >>> from conformal.calibration import calibrate_classifier
-    >>> cal_probs = np.array([[0.8, 0.1, 0.1],
-    ...                       [0.3, 0.6, 0.1],
-    ...                       [0.2, 0.3, 0.5]])
-    >>> y_cal = np.array([0, 1, 2])
-    >>> scores = calibrate_classifier(cal_probs, y_cal)
+    >>> calibration_probabilities = np.array([[0.8, 0.1, 0.1],
+    ...                                        [0.3, 0.6, 0.1],
+    ...                                        [0.2, 0.3, 0.5]])
+    >>> true_labels = np.array([0, 1, 2])
+    >>> scores = calibrate_classifier(calibration_probabilities, true_labels)
     >>> scores
     array([0.2, 0.4, 0.5])
 
@@ -122,12 +122,12 @@ def calibrate_classifier[F: np.floating[Any], I: np.integer[Any]](
 
     """
     # Validate shapes for classification
-    if cal_probabilities.ndim != TWO_DIMENSIONS:
-        msg = f"cal_probabilities must be 2D, got shape {cal_probabilities.shape}"
+    if calibration_probabilities.ndim != TWO_DIMENSIONS:
+        msg = f"calibration_probabilities must be 2D, got shape {calibration_probabilities.shape}"
         raise ValueError(msg)
 
-    if y_cal.ndim != ONE_DIMENSION:
-        msg = f"y_cal must be 1D, got shape {y_cal.shape}"
+    if true_labels.ndim != ONE_DIMENSION:
+        msg = f"true_labels must be 1D, got shape {true_labels.shape}"
         raise ValueError(msg)
 
     # Default classifier score function: 1 - probability of true class
@@ -137,10 +137,12 @@ def calibrate_classifier[F: np.floating[Any], I: np.integer[Any]](
         score: NDArray[F] = one - probs[np.arange(len(labels)), labels]
         return score
 
-    return _calibrate(cal_probabilities, y_cal, score_fn=classifier_score_fn)
+    return _calibrate(calibration_probabilities, true_labels, score_fn=classifier_score_fn)
 
 
-def calibrate_regressor[F: np.floating[Any]](cal_predictions: NDArray[F], y_cal: NDArray[F]) -> NDArray[F]:
+def calibrate_regressor[F: np.floating[Any]](
+    calibration_predictions: NDArray[F], true_labels: NDArray[F]
+) -> NDArray[F]:
     """Calibrate a conformal regressor using the standard nonconformity score.
 
     Computes nonconformity scores as the absolute residual |y_pred - y_true|,
@@ -149,11 +151,11 @@ def calibrate_regressor[F: np.floating[Any]](cal_predictions: NDArray[F], y_cal:
 
     Parameters
     ----------
-    cal_predictions : NDArray
+    calibration_predictions : NDArray
         Predicted values on the calibration set.
         Shape: (n_calibration_examples,) for univariate regression or
         (n_calibration_examples, n_outputs) for multi-output regression.
-    y_cal : NDArray
+    true_labels : NDArray
         True values for the calibration set.
         Shape: (n_calibration_examples,) for univariate regression or
         (n_calibration_examples, n_outputs) for multi-output regression.
@@ -172,17 +174,17 @@ def calibrate_regressor[F: np.floating[Any]](cal_predictions: NDArray[F], y_cal:
 
     >>> import numpy as np
     >>> from conformal.calibration import calibrate_regressor
-    >>> cal_preds = np.array([2.1, 5.3, 7.8])
-    >>> y_cal = np.array([2.0, 5.0, 8.0])
-    >>> scores = calibrate_regressor(cal_preds, y_cal)
+    >>> calibration_predictions = np.array([2.1, 5.3, 7.8])
+    >>> true_labels = np.array([2.0, 5.0, 8.0])
+    >>> scores = calibrate_regressor(calibration_predictions, true_labels)
     >>> scores
     array([0.1, 0.2, 0.3])
 
     Multi-output regression:
 
-    >>> cal_preds = np.array([[1.1, 2.2], [3.4, 4.3], [5.6, 6.5]])
-    >>> y_cal = np.array([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]])
-    >>> scores = calibrate_regressor(cal_preds, y_cal)
+    >>> calibration_predictions = np.array([[1.1, 2.2], [3.4, 4.3], [5.6, 6.5]])
+    >>> true_labels = np.array([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]])
+    >>> scores = calibrate_regressor(calibration_predictions, true_labels)
     >>> scores
     array([[0.1, 0.2],
            [0.4, 0.3],
@@ -199,16 +201,19 @@ def calibrate_regressor[F: np.floating[Any]](cal_predictions: NDArray[F], y_cal:
 
     """
     # Validate shapes for regression (1D or 2D)
-    if cal_predictions.ndim not in (ONE_DIMENSION, TWO_DIMENSIONS):
-        msg = f"cal_predictions must be 1D or 2D, got shape {cal_predictions.shape}"
+    if calibration_predictions.ndim not in (ONE_DIMENSION, TWO_DIMENSIONS):
+        msg = f"calibration_predictions must be 1D or 2D, got shape {calibration_predictions.shape}"
         raise ValueError(msg)
 
-    if y_cal.ndim not in (ONE_DIMENSION, TWO_DIMENSIONS):
-        msg = f"y_cal must be 1D or 2D, got shape {y_cal.shape}"
+    if true_labels.ndim not in (ONE_DIMENSION, TWO_DIMENSIONS):
+        msg = f"true_labels must be 1D or 2D, got shape {true_labels.shape}"
         raise ValueError(msg)
 
-    if cal_predictions.shape != y_cal.shape:
-        msg = f"Shape mismatch: cal_predictions has shape {cal_predictions.shape} but y_cal has shape {y_cal.shape}"
+    if calibration_predictions.shape != true_labels.shape:
+        msg = (
+            f"Shape mismatch: calibration_predictions has shape {calibration_predictions.shape} "
+            f"but true_labels has shape {true_labels.shape}"
+        )
         raise ValueError(msg)
 
     # Default regressor score function: absolute residual
@@ -216,4 +221,4 @@ def calibrate_regressor[F: np.floating[Any]](cal_predictions: NDArray[F], y_cal:
         score: NDArray[F] = np.abs(preds - true_values)
         return score
 
-    return _calibrate(cal_predictions, y_cal, score_fn=regressor_score_fn)
+    return _calibrate(calibration_predictions, true_labels, score_fn=regressor_score_fn)

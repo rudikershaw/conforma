@@ -8,10 +8,10 @@ from conformal.calibration import calibrate_classifier
 
 def test_calibrate_classifier_basic() -> None:
     """Test basic calibration with simple probabilities."""
-    cal_probs = np.array([[0.8, 0.1, 0.1], [0.3, 0.6, 0.1], [0.2, 0.3, 0.5]])
-    y_cal = np.array([0, 1, 2])
+    calibration_probabilities = np.array([[0.8, 0.1, 0.1], [0.3, 0.6, 0.1], [0.2, 0.3, 0.5]])
+    true_labels = np.array([0, 1, 2])
 
-    scores = calibrate_classifier(cal_probs, y_cal)
+    scores = calibrate_classifier(calibration_probabilities, true_labels)
 
     # Expected scores: 1 - [0.8, 0.6, 0.5] = [0.2, 0.4, 0.5], sorted
     expected = np.array([0.2, 0.4, 0.5])
@@ -20,10 +20,10 @@ def test_calibrate_classifier_basic() -> None:
 
 def test_calibrate_classifier_returns_sorted() -> None:
     """Test that scores are returned in sorted order."""
-    cal_probs = np.array([[0.1, 0.9], [0.9, 0.1], [0.5, 0.5]])
-    y_cal = np.array([1, 0, 1])
+    calibration_probabilities = np.array([[0.1, 0.9], [0.9, 0.1], [0.5, 0.5]])
+    true_labels = np.array([1, 0, 1])
 
-    scores = calibrate_classifier(cal_probs, y_cal)
+    scores = calibrate_classifier(calibration_probabilities, true_labels)
 
     # Expected scores: 1 - [0.9, 0.9, 0.5] = [0.1, 0.1, 0.5], sorted
     expected = np.array([0.1, 0.1, 0.5])
@@ -49,10 +49,10 @@ def test_calibrate_classifier_shape_validation() -> None:
 
 def test_calibrate_classifier_with_perfect_predictions() -> None:
     """Test calibration when model predicts perfectly."""
-    cal_probs = np.array([[1.0, 0.0], [0.0, 1.0], [1.0, 0.0]])
-    y_cal = np.array([0, 1, 0])
+    calibration_probabilities = np.array([[1.0, 0.0], [0.0, 1.0], [1.0, 0.0]])
+    true_labels = np.array([0, 1, 0])
 
-    scores = calibrate_classifier(cal_probs, y_cal)
+    scores = calibrate_classifier(calibration_probabilities, true_labels)
 
     # Expected scores: 1 - [1.0, 1.0, 1.0] = [0.0, 0.0, 0.0]
     expected = np.array([0.0, 0.0, 0.0])
@@ -61,10 +61,10 @@ def test_calibrate_classifier_with_perfect_predictions() -> None:
 
 def test_calibrate_classifier_with_uniform_predictions() -> None:
     """Test calibration when model predicts uniformly."""
-    cal_probs = np.array([[0.5, 0.5], [0.5, 0.5], [0.5, 0.5]])
-    y_cal = np.array([0, 1, 0])
+    calibration_probabilities = np.array([[0.5, 0.5], [0.5, 0.5], [0.5, 0.5]])
+    true_labels = np.array([0, 1, 0])
 
-    scores = calibrate_classifier(cal_probs, y_cal)
+    scores = calibrate_classifier(calibration_probabilities, true_labels)
 
     # Expected scores: 1 - [0.5, 0.5, 0.5] = [0.5, 0.5, 0.5]
     expected = np.array([0.5, 0.5, 0.5])
