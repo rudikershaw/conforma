@@ -1,9 +1,9 @@
-"""Tests for calibration functions."""
+"""Tests for the calibrate_classifier function."""
 
 import numpy as np
 import pytest
 
-from conformal.calibration import _calibrate, calibrate_classifier
+from conformal.calibration import calibrate_classifier
 
 
 def test_calibrate_classifier_basic() -> None:
@@ -47,30 +47,25 @@ def test_calibrate_classifier_shape_validation() -> None:
         calibrate_classifier(np.array([[0.8, 0.1, 0.1]]), np.array([0, 1]))
 
 
-def test_internal_calibrate_with_custom_score_fn() -> None:
-    """Test _calibrate with a custom score function."""
-    cal_probs = np.array([[0.8, 0.1, 0.1], [0.3, 0.6, 0.1]])
-    y_cal = np.array([0, 1])
+def test_calibrate_classifier_with_perfect_predictions() -> None:
+    """Test calibration when model predicts perfectly."""
+    cal_probs = np.array([[1.0, 0.0], [0.0, 1.0], [1.0, 0.0]])
+    y_cal = np.array([0, 1, 0])
 
-    # Custom score function that returns constant scores
-    def custom_score(probs: np.ndarray, labels: np.ndarray) -> np.ndarray:
-        return np.array([0.5, 0.3])
+    scores = calibrate_classifier(cal_probs, y_cal)
 
-    scores = _calibrate(cal_probs, y_cal, score_fn=custom_score)
-
-    # Should return sorted custom scores
-    expected = np.array([0.3, 0.5])
+    # Expected scores: 1 - [1.0, 1.0, 1.0] = [0.0, 0.0, 0.0]
+    expected = np.array([0.0, 0.0, 0.0])
     np.testing.assert_array_almost_equal(scores, expected)
 
 
-def test_internal_calibrate_validates_score_fn_output() -> None:
-    """Test that _calibrate validates score function output shape."""
-    cal_probs = np.array([[0.8, 0.1, 0.1], [0.3, 0.6, 0.1]])
-    y_cal = np.array([0, 1])
+def test_calibrate_classifier_with_uniform_predictions() -> None:
+    """Test calibration when model predicts uniformly."""
+    cal_probs = np.array([[0.5, 0.5], [0.5, 0.5], [0.5, 0.5]])
+    y_cal = np.array([0, 1, 0])
 
-    # Score function that returns wrong shape
-    def bad_score_fn(probs: np.ndarray, labels: np.ndarray) -> np.ndarray:
-        return np.array([[0.5, 0.3]])  # 2D instead of 1D
+    scores = calibrate_classifier(cal_probs, y_cal)
 
-    with pytest.raises(ValueError, match="score_fn must return 1D array"):
-        _calibrate(cal_probs, y_cal, score_fn=bad_score_fn)
+    # Expected scores: 1 - [0.5, 0.5, 0.5] = [0.5, 0.5, 0.5]
+    expected = np.array([0.5, 0.5, 0.5])
+    np.testing.assert_array_almost_equal(scores, expected)
