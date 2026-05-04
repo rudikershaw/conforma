@@ -36,7 +36,7 @@ def tests(session: Session) -> None:
     - Python 3.13: numpy 2.0+ (only version with 3.13 wheels)
     """
     is3_12 = session.python == "3.12"
-    session.install("pytest", "numpy>=1.24.0,<2.0.0" if is3_12 else "numpy>=2.0.0,<3.0.0")
+    session.install("numpy>=1.24.0,<2.0.0" if is3_12 else "numpy>=2.0.0,<3.0.0")
 
     # Validate that we have the expected numpy version for this Python version
     numpy_version = session.run("python", "-c", "import numpy; print(numpy.__version__)", silent=True)

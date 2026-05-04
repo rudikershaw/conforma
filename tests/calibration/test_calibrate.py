@@ -4,9 +4,11 @@ import numpy as np
 import pytest
 
 from conformal.calibration import _calibrate
+from tests.conftest import default_benchmark
 
 
-def test_calibrate_with_custom_score_fn() -> None:
+@default_benchmark
+def test_calibrate_with_custom_score_fn(benchmark) -> None:
     """Test _calibrate with a custom score function."""
     calibration_probabilities = np.array([[0.8, 0.1, 0.1], [0.3, 0.6, 0.1]])
     true_labels = np.array([0, 1])
@@ -15,7 +17,7 @@ def test_calibrate_with_custom_score_fn() -> None:
     def custom_score(probs: np.ndarray, labels: np.ndarray) -> np.ndarray:
         return np.array([0.5, 0.3])
 
-    scores = _calibrate(calibration_probabilities, true_labels, score_fn=custom_score)
+    scores = benchmark(_calibrate, calibration_probabilities, true_labels, score_fn=custom_score)
 
     # Should return sorted custom scores
     expected = np.array([0.3, 0.5])
@@ -60,7 +62,8 @@ def test_calibrate_validates_score_fn_output_length() -> None:
         _calibrate(calibration_probabilities, true_labels, score_fn=bad_score_fn)
 
 
-def test_calibrate_with_2d_scores() -> None:
+@default_benchmark
+def test_calibrate_with_2d_scores(benchmark) -> None:
     """Test _calibrate with 2D score output (multi-output case)."""
     calibration_predictions = np.array([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]])
     true_labels = np.array([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]])
@@ -69,7 +72,7 @@ def test_calibrate_with_2d_scores() -> None:
     def score_fn_2d(preds: np.ndarray, true_vals: np.ndarray) -> np.ndarray:
         return np.array([[0.5, 0.3], [0.7, 0.1], [0.2, 0.6]])
 
-    scores = _calibrate(calibration_predictions, true_labels, score_fn=score_fn_2d)
+    scores = benchmark(_calibrate, calibration_predictions, true_labels, score_fn=score_fn_2d)
 
     # Should sort along axis 0 (per column)
     expected = np.array([[0.2, 0.1], [0.5, 0.3], [0.7, 0.6]])
