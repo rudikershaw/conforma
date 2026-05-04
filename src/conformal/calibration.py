@@ -10,9 +10,9 @@ from typing import Any
 import numpy as np
 from numpy.typing import NDArray
 
-# Expected array dimensions for validation
-REQUIRED_PROBABILITIES_DIMENSIONS = 2
-REQUIRED_LABELS_DIMENSIONS = 1
+# Expected array dimension constants for validation
+TWO_DIMENSIONS = 2
+ONE_DIMENSION = 1
 
 
 def _calibrate[F: np.floating[Any], T: np.generic](
@@ -36,13 +36,17 @@ def _calibrate[F: np.floating[Any], T: np.generic](
     score_fn : Callable
         Function that computes nonconformity scores given predictions and true values.
         Signature: (predictions, true_values) -> scores
-        Must return a 1D array of shape (n_calibration_examples,).
+        Must return a 1D array of shape (n_calibration_examples,) for single-output
+        tasks, or a 2D array of shape (n_calibration_examples, n_outputs) for
+        multi-output tasks.
 
     Returns
     -------
     NDArray
         Sorted nonconformity scores from the calibration set.
-        Shape: (n_calibration_examples,)
+        Shape: (n_calibration_examples,) for single-output or
+        (n_calibration_examples, n_outputs) for multi-output.
+        Scores are sorted independently along axis 0 (per output dimension).
 
     Notes
     -----
@@ -60,13 +64,16 @@ def _calibrate[F: np.floating[Any], T: np.generic](
     # Compute nonconformity scores
     scores: NDArray[F] = score_fn(cal_predictions, y_cal)
 
-    # Validate scores shape
-    if scores.shape != (n_cal,):
-        msg = f"score_fn must return 1D array of shape ({n_cal},), got {scores.shape}"
+    # Validate scores shape: must be 1D or 2D with first dimension matching n_cal
+    if scores.ndim not in (1, 2):
+        msg = f"score_fn must return 1D or 2D array, got shape {scores.shape}"
+        raise ValueError(msg)
+    if scores.shape[0] != n_cal:
+        msg = f"score_fn must return array with {n_cal} examples, got {scores.shape[0]}"
         raise ValueError(msg)
 
-    # Sort scores in ascending order and return
-    sorted_scores: NDArray[F] = np.sort(scores)
+    # Sort scores in ascending order along axis 0 (per column for 2D)
+    sorted_scores: NDArray[F] = np.sort(scores, axis=0)
     return sorted_scores
 
 
@@ -115,11 +122,11 @@ def calibrate_classifier[F: np.floating[Any], I: np.integer[Any]](
 
     """
     # Validate shapes for classification
-    if cal_probabilities.ndim != REQUIRED_PROBABILITIES_DIMENSIONS:
+    if cal_probabilities.ndim != TWO_DIMENSIONS:
         msg = f"cal_probabilities must be 2D, got shape {cal_probabilities.shape}"
         raise ValueError(msg)
 
-    if y_cal.ndim != REQUIRED_LABELS_DIMENSIONS:
+    if y_cal.ndim != ONE_DIMENSION:
         msg = f"y_cal must be 1D, got shape {y_cal.shape}"
         raise ValueError(msg)
 
@@ -137,25 +144,32 @@ def calibrate_regressor[F: np.floating[Any]](cal_predictions: NDArray[F], y_cal:
     """Calibrate a conformal regressor using the standard nonconformity score.
 
     Computes nonconformity scores as the absolute residual |y_pred - y_true|,
-    then returns them sorted in ascending order.
+    then returns them sorted in ascending order. Supports both univariate and
+    multi-output regression.
 
     Parameters
     ----------
     cal_predictions : NDArray
         Predicted values on the calibration set.
-        Shape: (n_calibration_examples,)
+        Shape: (n_calibration_examples,) for univariate regression or
+        (n_calibration_examples, n_outputs) for multi-output regression.
     y_cal : NDArray
         True values for the calibration set.
-        Shape: (n_calibration_examples,)
+        Shape: (n_calibration_examples,) for univariate regression or
+        (n_calibration_examples, n_outputs) for multi-output regression.
 
     Returns
     -------
     NDArray
         Sorted nonconformity scores from the calibration set.
-        Shape: (n_calibration_examples,)
+        Shape: (n_calibration_examples,) for univariate regression or
+        (n_calibration_examples, n_outputs) for multi-output regression.
+        For multi-output, each output dimension is calibrated independently.
 
     Examples
     --------
+    Univariate regression:
+
     >>> import numpy as np
     >>> from conformal.calibration import calibrate_regressor
     >>> cal_preds = np.array([2.1, 5.3, 7.8])
@@ -164,24 +178,37 @@ def calibrate_regressor[F: np.floating[Any]](cal_predictions: NDArray[F], y_cal:
     >>> scores
     array([0.1, 0.2, 0.3])
 
+    Multi-output regression:
+
+    >>> cal_preds = np.array([[1.1, 2.2], [3.4, 4.3], [5.6, 6.5]])
+    >>> y_cal = np.array([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]])
+    >>> scores = calibrate_regressor(cal_preds, y_cal)
+    >>> scores
+    array([[0.1, 0.2],
+           [0.4, 0.3],
+           [0.6, 0.5]])
+
     Notes
     -----
     The calibration set should be held-out data not used during model training.
     The exchangeability assumption requires that calibration and test data are
     drawn from the same distribution.
 
-    For regression, larger residuals indicate the model was more surprised by
-    the true value. The sorted scores are used to construct prediction intervals
-    that achieve the desired coverage level.
+    For multi-output regression, each output dimension is calibrated independently,
+    providing separate prediction intervals for each output.
 
     """
-    # Validate shapes for regression
-    if cal_predictions.ndim != REQUIRED_LABELS_DIMENSIONS:
-        msg = f"cal_predictions must be 1D, got shape {cal_predictions.shape}"
+    # Validate shapes for regression (1D or 2D)
+    if cal_predictions.ndim not in (ONE_DIMENSION, TWO_DIMENSIONS):
+        msg = f"cal_predictions must be 1D or 2D, got shape {cal_predictions.shape}"
         raise ValueError(msg)
 
-    if y_cal.ndim != REQUIRED_LABELS_DIMENSIONS:
-        msg = f"y_cal must be 1D, got shape {y_cal.shape}"
+    if y_cal.ndim not in (ONE_DIMENSION, TWO_DIMENSIONS):
+        msg = f"y_cal must be 1D or 2D, got shape {y_cal.shape}"
+        raise ValueError(msg)
+
+    if cal_predictions.shape != y_cal.shape:
+        msg = f"Shape mismatch: cal_predictions has shape {cal_predictions.shape} but y_cal has shape {y_cal.shape}"
         raise ValueError(msg)
 
     # Default regressor score function: absolute residual
