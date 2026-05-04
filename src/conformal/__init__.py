@@ -6,8 +6,8 @@ uncertainty estimates from ML models.
 
 from importlib.metadata import version
 
-from conformal.calibration import calibrate_classifier
+from conformal.calibration import calibrate_classifier, calibrate_regressor
 
 __version__ = version("conformal")
 
-__all__ = ["__version__", "calibrate_classifier"]
+__all__ = ["__version__", "calibrate_classifier", "calibrate_regressor"]

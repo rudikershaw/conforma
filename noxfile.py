@@ -11,15 +11,15 @@ options.sessions = ["lint", "security", "tests"]
 @session(uv_no_install_project=True, uv_quiet=True, uv_groups=["lint", "dev"])
 def lint(session: Session) -> None:
     """Run ruff linter."""
-    session.run("ruff", "check", "src", "noxfile.py")
-    session.run("ruff", "format", "--check", "--diff", "src", "noxfile.py")
+    session.run("ruff", "check", "src", "tests", "noxfile.py")
+    session.run("ruff", "format", "--check", "--diff", "src", "tests", "noxfile.py")
     session.run("mypy", "src", "noxfile.py")
 
 
 @session(uv_no_install_project=True, uv_quiet=True, uv_groups=["lint"])
 def format_apply(session: Session) -> None:
     """Format code with ruff."""
-    session.run("ruff", "format", "src", "noxfile.py")
+    session.run("ruff", "format", "src", "tests", "noxfile.py")
 
 
 @session(uv_no_install_project=True, uv_quiet=True, uv_groups=["lint"])

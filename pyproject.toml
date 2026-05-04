@@ -8,7 +8,7 @@ authors = [
 ]
 requires-python = ">=3.12"
 dependencies = [
-    "numpy>=1.24.0",
+    "numpy>=1.24.0,<3.0.0",
 ]
 license = { text = "MIT" }
 keywords = ["conformal-prediction", "uncertainty", "machine-learning"]
@@ -51,11 +51,16 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
+addopts = "--benchmark-storage=reports/.benchmarks"
 
 [tool.coverage.run]
 source = ["src"]
 branch = true
 omit = ["*/tests/*", "*/test_*.py"]
+data_file = "reports/.coverage"
+
+[tool.coverage.html]
+directory = "reports/htmlcov"
 
 [tool.coverage.report]
 precision = 2
@@ -96,6 +101,13 @@ select = [
 ignore = [
     "D203",  # Conflicts with D211 (PEP 257: no blank line before class)
     "D213",  # Conflicts with D212 (PEP 257: summary on first line)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = [
+    "S101",  # assert is the standard way to write tests
+    "D",     # test docstrings are descriptive, not API documentation
+    "ARG",   # test helpers often match callback signatures without using all args
 ]
 
 [build-system]
