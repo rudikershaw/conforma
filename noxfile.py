@@ -10,7 +10,7 @@ options.sessions = ["lint", "security", "tests"]
 
 @session(uv_no_install_project=True, uv_quiet=True, uv_groups=["lint", "dev"])
 def lint(session: Session) -> None:
-    """Run ruff linter."""
+    """Run linters."""
     session.run("ruff", "check", "src", "tests", "noxfile.py")
     session.run("ruff", "format", "--check", "--diff", "src", "tests", "noxfile.py")
     session.run("mypy", "src", "noxfile.py")

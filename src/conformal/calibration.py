@@ -80,17 +80,17 @@ def _calibrate[F: np.floating[Any], T: np.generic](
 def calibrate_classifier[F: np.floating[Any], I: np.integer[Any]](
     calibration_probabilities: NDArray[F], true_labels: NDArray[I]
 ) -> NDArray[F]:
-    """Calibrate a conformal classifier using the standard nonconformity score.
+    """Produce standard nonconformity scores for use with a conformal classifier.
 
     Computes nonconformity scores as `1 - p` where p is the predicted probability
-    for the true class, then returns them sorted in ascending order.
+    for the true class. The nonconformity score acts as a measure of how surprised
+    the model was by the real answer. Scores are returned sorted in ascending order.
 
     Parameters
     ----------
     calibration_probabilities : NDArray
-        Predicted probabilities on the calibration set.
+        Model output scores on the calibration set (e.g. probabilities, logits).
         Shape: (n_calibration_examples, n_classes)
-        Must sum to 1 across axis 1 (i.e., valid probability distributions).
     true_labels : NDArray
         True class labels for the calibration set.
         Shape: (n_calibration_examples,)
@@ -117,8 +117,8 @@ def calibrate_classifier[F: np.floating[Any], I: np.integer[Any]](
     Notes
     -----
     The calibration set should be held-out data not used during model training.
-    The exchangeability assumption requires that calibration and test data are
-    drawn from the same distribution.
+    The exchangeability assumption states that calibration and test data must be
+    drawn from the same distribution, or distributions that are sufficiently similar.
 
     """
     # Validate shapes for classification
@@ -128,6 +128,15 @@ def calibrate_classifier[F: np.floating[Any], I: np.integer[Any]](
 
     if true_labels.ndim != ONE_DIMENSION:
         msg = f"true_labels must be 1D, got shape {true_labels.shape}"
+        raise ValueError(msg)
+
+    n_classes = calibration_probabilities.shape[1]
+    if np.any(true_labels < 0) or np.any(true_labels >= n_classes):
+        msg = (
+            f"true_labels contains values outside [0, {n_classes}). "
+            f"Labels must be valid class indices for the {n_classes} classes "
+            f"in calibration_probabilities."
+        )
         raise ValueError(msg)
 
     # Default classifier score function: 1 - probability of true class
@@ -141,13 +150,14 @@ def calibrate_classifier[F: np.floating[Any], I: np.integer[Any]](
 
 
 def calibrate_regressor[F: np.floating[Any]](
-    calibration_predictions: NDArray[F], true_labels: NDArray[F]
+    calibration_predictions: NDArray[F], true_values: NDArray[F]
 ) -> NDArray[F]:
-    """Calibrate a conformal regressor using the standard nonconformity score.
+    """Produce standard nonconformity scores for use with a conformal regressor.
 
-    Computes nonconformity scores as the absolute residual |y_pred - y_true|,
-    then returns them sorted in ascending order. Supports both univariate and
-    multi-output regression.
+    Computes nonconformity scores as the absolute difference between the prediction
+    and the true value. The nonconformity score acts as a measure of how surprised
+    the model was by the real answer. Scores are returned sorted in ascending order.
+    Supports both univariate and multi-output regression.
 
     Parameters
     ----------
@@ -155,7 +165,7 @@ def calibrate_regressor[F: np.floating[Any]](
         Predicted values on the calibration set.
         Shape: (n_calibration_examples,) for univariate regression or
         (n_calibration_examples, n_outputs) for multi-output regression.
-    true_labels : NDArray
+    true_values : NDArray
         True values for the calibration set.
         Shape: (n_calibration_examples,) for univariate regression or
         (n_calibration_examples, n_outputs) for multi-output regression.
@@ -175,16 +185,16 @@ def calibrate_regressor[F: np.floating[Any]](
     >>> import numpy as np
     >>> from conformal.calibration import calibrate_regressor
     >>> calibration_predictions = np.array([2.1, 5.3, 7.8])
-    >>> true_labels = np.array([2.0, 5.0, 8.0])
-    >>> scores = calibrate_regressor(calibration_predictions, true_labels)
+    >>> true_values = np.array([2.0, 5.0, 8.0])
+    >>> scores = calibrate_regressor(calibration_predictions, true_values)
     >>> scores
     array([0.1, 0.2, 0.3])
 
     Multi-output regression:
 
     >>> calibration_predictions = np.array([[1.1, 2.2], [3.4, 4.3], [5.6, 6.5]])
-    >>> true_labels = np.array([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]])
-    >>> scores = calibrate_regressor(calibration_predictions, true_labels)
+    >>> true_values = np.array([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]])
+    >>> scores = calibrate_regressor(calibration_predictions, true_values)
     >>> scores
     array([[0.1, 0.2],
            [0.4, 0.3],
@@ -193,8 +203,8 @@ def calibrate_regressor[F: np.floating[Any]](
     Notes
     -----
     The calibration set should be held-out data not used during model training.
-    The exchangeability assumption requires that calibration and test data are
-    drawn from the same distribution.
+    The exchangeability assumption states that calibration and test data must be
+    drawn from the same distribution, or distributions that are sufficiently similar.
 
     For multi-output regression, each output dimension is calibrated independently,
     providing separate prediction intervals for each output.
@@ -205,14 +215,14 @@ def calibrate_regressor[F: np.floating[Any]](
         msg = f"calibration_predictions must be 1D or 2D, got shape {calibration_predictions.shape}"
         raise ValueError(msg)
 
-    if true_labels.ndim not in (ONE_DIMENSION, TWO_DIMENSIONS):
-        msg = f"true_labels must be 1D or 2D, got shape {true_labels.shape}"
+    if true_values.ndim not in (ONE_DIMENSION, TWO_DIMENSIONS):
+        msg = f"true_values must be 1D or 2D, got shape {true_values.shape}"
         raise ValueError(msg)
 
-    if calibration_predictions.shape != true_labels.shape:
+    if calibration_predictions.shape != true_values.shape:
         msg = (
             f"Shape mismatch: calibration_predictions has shape {calibration_predictions.shape} "
-            f"but true_labels has shape {true_labels.shape}"
+            f"but true_values has shape {true_values.shape}"
         )
         raise ValueError(msg)
 
@@ -221,4 +231,4 @@ def calibrate_regressor[F: np.floating[Any]](
         score: NDArray[F] = np.abs(preds - true_values)
         return score
 
-    return _calibrate(calibration_predictions, true_labels, score_fn=regressor_score_fn)
+    return _calibrate(calibration_predictions, true_values, score_fn=regressor_score_fn)

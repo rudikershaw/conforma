@@ -49,6 +49,14 @@ def test_calibrate_classifier_shape_validation() -> None:
     with pytest.raises(ValueError, match="Shape mismatch"):
         calibrate_classifier(np.array([[0.8, 0.1, 0.1]]), np.array([0, 1]))
 
+    # Label index too high
+    with pytest.raises(ValueError, match="valid class indices"):
+        calibrate_classifier(np.array([[0.8, 0.1, 0.1]]), np.array([3]))
+
+    # Negative label index
+    with pytest.raises(ValueError, match="valid class indices"):
+        calibrate_classifier(np.array([[0.8, 0.1, 0.1]]), np.array([-1]))
+
 
 @default_benchmark
 def test_calibrate_classifier_with_perfect_predictions(benchmark) -> None:

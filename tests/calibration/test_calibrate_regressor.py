@@ -11,9 +11,9 @@ from tests.conftest import default_benchmark
 def test_calibrate_regressor_univariate_basic(benchmark) -> None:
     """Test basic univariate regression calibration."""
     calibration_predictions = np.array([2.1, 5.3, 7.8])
-    true_labels = np.array([2.0, 5.0, 8.0])
+    true_values = np.array([2.0, 5.0, 8.0])
 
-    scores = benchmark(calibrate_regressor, calibration_predictions, true_labels)
+    scores = benchmark(calibrate_regressor, calibration_predictions, true_values)
 
     # Expected scores: abs([2.1-2.0, 5.3-5.0, 7.8-8.0]) = [0.1, 0.3, 0.2], sorted
     expected = np.array([0.1, 0.2, 0.3])
@@ -24,9 +24,9 @@ def test_calibrate_regressor_univariate_basic(benchmark) -> None:
 def test_calibrate_regressor_univariate_returns_sorted(benchmark) -> None:
     """Test that scores are returned in sorted order for univariate case."""
     calibration_predictions = np.array([1.0, 4.0, 2.5])
-    true_labels = np.array([2.0, 3.0, 2.0])
+    true_values = np.array([2.0, 3.0, 2.0])
 
-    scores = benchmark(calibrate_regressor, calibration_predictions, true_labels)
+    scores = benchmark(calibrate_regressor, calibration_predictions, true_values)
 
     # Expected scores: abs([1.0-2.0, 4.0-3.0, 2.5-2.0]) = [1.0, 1.0, 0.5], sorted
     expected = np.array([0.5, 1.0, 1.0])
@@ -39,9 +39,9 @@ def test_calibrate_regressor_univariate_returns_sorted(benchmark) -> None:
 def test_calibrate_regressor_multioutput_basic(benchmark) -> None:
     """Test basic multi-output regression calibration."""
     calibration_predictions = np.array([[1.1, 2.2], [3.4, 4.3], [5.6, 6.5]])
-    true_labels = np.array([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]])
+    true_values = np.array([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]])
 
-    scores = benchmark(calibrate_regressor, calibration_predictions, true_labels)
+    scores = benchmark(calibrate_regressor, calibration_predictions, true_values)
 
     # Expected scores per column:
     # Column 0: abs([1.1-1.0, 3.4-3.0, 5.6-5.0]) = [0.1, 0.4, 0.6], sorted
@@ -54,9 +54,9 @@ def test_calibrate_regressor_multioutput_basic(benchmark) -> None:
 def test_calibrate_regressor_multioutput_returns_sorted(benchmark) -> None:
     """Test that each column is sorted independently for multi-output case."""
     calibration_predictions = np.array([[1.0, 5.0], [3.0, 2.0], [2.0, 4.0]])
-    true_labels = np.array([[2.0, 6.0], [4.0, 3.0], [3.0, 5.0]])
+    true_values = np.array([[2.0, 6.0], [4.0, 3.0], [3.0, 5.0]])
 
-    scores = benchmark(calibrate_regressor, calibration_predictions, true_labels)
+    scores = benchmark(calibrate_regressor, calibration_predictions, true_values)
 
     # Verify each column is sorted independently
     assert np.all(scores[:-1, 0] <= scores[1:, 0])
@@ -86,9 +86,9 @@ def test_calibrate_regressor_shape_validation() -> None:
 def test_calibrate_regressor_with_perfect_predictions(benchmark) -> None:
     """Test calibration when predictions are perfect."""
     calibration_predictions = np.array([1.0, 2.0, 3.0])
-    true_labels = np.array([1.0, 2.0, 3.0])
+    true_values = np.array([1.0, 2.0, 3.0])
 
-    scores = benchmark(calibrate_regressor, calibration_predictions, true_labels)
+    scores = benchmark(calibrate_regressor, calibration_predictions, true_values)
 
     # All residuals should be zero
     expected = np.array([0.0, 0.0, 0.0])
@@ -99,9 +99,9 @@ def test_calibrate_regressor_with_perfect_predictions(benchmark) -> None:
 def test_calibrate_regressor_multioutput_with_different_errors(benchmark) -> None:
     """Test multi-output case where different outputs have different error magnitudes."""
     calibration_predictions = np.array([[1.0, 10.0], [2.0, 20.0], [3.0, 30.0]])
-    true_labels = np.array([[1.5, 15.0], [2.5, 25.0], [3.5, 35.0]])
+    true_values = np.array([[1.5, 15.0], [2.5, 25.0], [3.5, 35.0]])
 
-    scores = benchmark(calibrate_regressor, calibration_predictions, true_labels)
+    scores = benchmark(calibrate_regressor, calibration_predictions, true_values)
 
     # Column 0 errors: [0.5, 0.5, 0.5]
     # Column 1 errors: [5.0, 5.0, 5.0]
