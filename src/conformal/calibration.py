@@ -10,9 +10,7 @@ from typing import Any
 import numpy as np
 from numpy.typing import NDArray
 
-# Expected array dimension constants for validation
-TWO_DIMENSIONS = 2
-ONE_DIMENSION = 1
+from conformal.core import ONE_DIMENSION, TWO_DIMENSIONS
 
 
 def _calibrate[F: np.floating[Any], T: np.generic](
@@ -55,25 +53,22 @@ def _calibrate[F: np.floating[Any], T: np.generic](
     (classification vs regression).
 
     """
-    # Basic validation: ensure first dimension matches
     n_cal = calibration_predictions.shape[0]
     if true_labels.shape[0] != n_cal:
         msg = f"Shape mismatch: calibration_predictions has {n_cal} examples but true_labels has {true_labels.shape[0]}"
         raise ValueError(msg)
 
-    # Compute nonconformity scores
-    scores: NDArray[F] = score_fn(calibration_predictions, true_labels)
+    nonconformity_scores: NDArray[F] = score_fn(calibration_predictions, true_labels)
 
-    # Validate scores shape: must be 1D or 2D with first dimension matching n_cal
-    if scores.ndim not in (1, 2):
-        msg = f"score_fn must return 1D or 2D array, got shape {scores.shape}"
+    if nonconformity_scores.ndim not in (1, 2):
+        msg = f"score_fn must return 1D or 2D array, got shape {nonconformity_scores.shape}"
         raise ValueError(msg)
-    if scores.shape[0] != n_cal:
-        msg = f"score_fn must return array with {n_cal} examples, got {scores.shape[0]}"
+    if nonconformity_scores.shape[0] != n_cal:
+        msg = f"score_fn must return array with {n_cal} examples, got {nonconformity_scores.shape[0]}"
         raise ValueError(msg)
 
     # Sort scores in ascending order along axis 0 (per column for 2D)
-    sorted_scores: NDArray[F] = np.sort(scores, axis=0)
+    sorted_scores: NDArray[F] = np.sort(nonconformity_scores, axis=0)
     return sorted_scores
 
 
@@ -121,7 +116,6 @@ def calibrate_classifier[F: np.floating[Any], I: np.integer[Any]](
     drawn from the same distribution, or distributions that are sufficiently similar.
 
     """
-    # Validate shapes for classification
     if calibration_probabilities.ndim != TWO_DIMENSIONS:
         msg = f"calibration_probabilities must be 2D, got shape {calibration_probabilities.shape}"
         raise ValueError(msg)
@@ -139,7 +133,6 @@ def calibrate_classifier[F: np.floating[Any], I: np.integer[Any]](
         )
         raise ValueError(msg)
 
-    # Default classifier score function: 1 - probability of true class
     def classifier_score_fn(probs: NDArray[F], labels: NDArray[I]) -> NDArray[F]:
         # Use the input's dtype for the constant to prevent precision upcasting
         one = np.array(1, dtype=probs.dtype)
@@ -210,7 +203,6 @@ def calibrate_regressor[F: np.floating[Any]](
     providing separate prediction intervals for each output.
 
     """
-    # Validate shapes for regression (1D or 2D)
     if calibration_predictions.ndim not in (ONE_DIMENSION, TWO_DIMENSIONS):
         msg = f"calibration_predictions must be 1D or 2D, got shape {calibration_predictions.shape}"
         raise ValueError(msg)
@@ -226,7 +218,6 @@ def calibrate_regressor[F: np.floating[Any]](
         )
         raise ValueError(msg)
 
-    # Default regressor score function: absolute residual
     def regressor_score_fn(preds: NDArray[F], true_values: NDArray[F]) -> NDArray[F]:
         score: NDArray[F] = np.abs(preds - true_values)
         return score
