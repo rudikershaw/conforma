@@ -19,6 +19,7 @@ def lint(session: Session) -> None:
 @session(uv_no_install_project=True, uv_quiet=True, uv_groups=["lint"])
 def format_apply(session: Session) -> None:
     """Format code with ruff."""
+    session.run("ruff", "check", "--fix", "src", "tests", "noxfile.py")
     session.run("ruff", "format", "src", "tests", "noxfile.py")
 
 
@@ -47,4 +48,13 @@ def tests(session: Session) -> None:
     if not numpy_version.startswith(f"{expected_major}."):
         session.error(f"Expected numpy {expected_major}.x but got {numpy_version}")
 
-    session.run("pytest", "tests", "-v", "--cov=conformal", "--cov-report=term-missing", "--cov-report=html")
+    session.run(
+        "pytest",
+        "tests",
+        "--doctest-modules",
+        "--pyargs",
+        "conformal",
+        "--cov=conformal",
+        "--cov-report=term-missing",
+        "--cov-report=html",
+    )

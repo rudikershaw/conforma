@@ -1,7 +1,7 @@
 """Conformal classifier wrapper.
 
 Wraps any model callable with conformal calibration to produce p-values or
-prediction sets with finite-sample coverage guarantees.
+prediction sets with exact coverage guarantees at any sample size.
 """
 
 from collections.abc import Callable
@@ -10,7 +10,7 @@ from typing import Any
 import numpy as np
 from numpy.typing import NDArray
 
-from conformal.core import TWO_DIMENSIONS, compute_p_values
+from conformal.core import ONE_DIMENSION, TWO_DIMENSIONS, compute_p_values
 
 
 class ConformalClassifier[X, F: np.floating[Any]]:
@@ -48,8 +48,8 @@ class ConformalClassifier[X, F: np.floating[Any]]:
 
     def __init__(self, predict_fn: Callable[[X], NDArray[F]], calibration: NDArray[F]) -> None:
         """Create a conformal classifier from a model callable and calibration scores."""
-        if calibration.ndim != 1:
-            msg = f"calibration must be 1D (from calibrate_classifier), got shape {calibration.shape}"
+        if calibration.ndim != ONE_DIMENSION:
+            msg = f"calibration must be 1D (from calibrate_classifier), got shape {calibration.shape}."
             raise ValueError(msg)
         self._predict_fn = predict_fn
         self._calibration = calibration
@@ -75,7 +75,7 @@ class ConformalClassifier[X, F: np.floating[Any]]:
 
         """
         if coverage <= 0 or coverage > 1:
-            msg = f"coverage must be in (0, 1], got {coverage}"
+            msg = f"coverage must be in (0, 1], got {coverage}."
             raise ValueError(msg)
         return self.predict_p_values(inputs) >= coverage
 
@@ -98,7 +98,7 @@ class ConformalClassifier[X, F: np.floating[Any]]:
         """
         probabilities = self._predict_fn(inputs)
         if probabilities.ndim != TWO_DIMENSIONS:
-            msg = f"predict_fn must return a 2D array, got shape {probabilities.shape}"
+            msg = f"predict_fn must return a 2D array, got shape {probabilities.shape}."
             raise ValueError(msg)
 
         one = np.array(1, dtype=probabilities.dtype)

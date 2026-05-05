@@ -77,18 +77,18 @@ def compute_p_values[F: np.floating[Any]](
 
     """
     if calibration_scores.ndim not in (ONE_DIMENSION, TWO_DIMENSIONS):
-        msg = f"calibration_scores must be 1D or 2D, got shape {calibration_scores.shape}"
+        msg = f"calibration_scores must be 1D or 2D, got shape {calibration_scores.shape}."
         raise ValueError(msg)
 
     if prediction_scores.ndim not in (ONE_DIMENSION, TWO_DIMENSIONS):
-        msg = f"prediction_scores must be 1D or 2D, got shape {prediction_scores.shape}"
+        msg = f"prediction_scores must be 1D or 2D, got shape {prediction_scores.shape}."
         raise ValueError(msg)
 
     both_2d = calibration_scores.ndim == TWO_DIMENSIONS and prediction_scores.ndim == TWO_DIMENSIONS
     if both_2d and calibration_scores.shape[1] != prediction_scores.shape[1]:
         msg = (
             f"Column mismatch: calibration_scores has {calibration_scores.shape[1]} outputs "
-            f"but prediction_scores has {prediction_scores.shape[1]}"
+            f"but prediction_scores has {prediction_scores.shape[1]}."
         )
         raise ValueError(msg)
 

@@ -11,6 +11,7 @@ import conformal
 from conformal.calibration import calibrate_classifier, calibrate_regressor
 from conformal.classifier import ConformalClassifier
 from conformal.core import compute_p_values
+from conformal.regressor import ConformalRegressor
 
 
 def _make_compute_p_values_inputs(dtype_a, dtype_b):
@@ -40,11 +41,21 @@ def _make_predict_p_values_inputs(dtype_a, dtype_b):
     return wrapper, test_probs
 
 
+def _make_regressor_predict_inputs(dtype_a, dtype_b):
+    cal_preds = np.array([2.1, 5.3, 7.8, 3.2], dtype=dtype_a)
+    cal_true = np.array([2.0, 5.0, 8.0, 3.5], dtype=dtype_b)
+    calibration = calibrate_regressor(cal_preds, cal_true)
+    wrapper = ConformalRegressor(predict_fn=lambda x: x, calibration=calibration)
+    test_preds = np.array([4.0, 6.0], dtype=dtype_b)
+    return wrapper, test_preds, 0.5
+
+
 PRECISION_REGISTRY = (
     (compute_p_values, _make_compute_p_values_inputs),
     (calibrate_classifier, _make_calibrate_classifier_inputs),
     (calibrate_regressor, _make_calibrate_regressor_inputs),
     (ConformalClassifier.predict_p_values, _make_predict_p_values_inputs),
+    (ConformalRegressor.predict, _make_regressor_predict_inputs),
 )
 
 PRECISION_EXEMPT: frozenset[str] = frozenset({"ConformalClassifier.predict"})

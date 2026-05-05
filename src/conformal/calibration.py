@@ -117,11 +117,11 @@ def calibrate_classifier[F: np.floating[Any], I: np.integer[Any]](
 
     """
     if calibration_probabilities.ndim != TWO_DIMENSIONS:
-        msg = f"calibration_probabilities must be 2D, got shape {calibration_probabilities.shape}"
+        msg = f"calibration_probabilities must be 2D, got shape {calibration_probabilities.shape}."
         raise ValueError(msg)
 
     if true_labels.ndim != ONE_DIMENSION:
-        msg = f"true_labels must be 1D, got shape {true_labels.shape}"
+        msg = f"true_labels must be 1D, got shape {true_labels.shape}."
         raise ValueError(msg)
 
     n_classes = calibration_probabilities.shape[1]
@@ -204,17 +204,17 @@ def calibrate_regressor[F: np.floating[Any]](
 
     """
     if calibration_predictions.ndim not in (ONE_DIMENSION, TWO_DIMENSIONS):
-        msg = f"calibration_predictions must be 1D or 2D, got shape {calibration_predictions.shape}"
+        msg = f"calibration_predictions must be 1D or 2D, got shape {calibration_predictions.shape}."
         raise ValueError(msg)
 
     if true_values.ndim not in (ONE_DIMENSION, TWO_DIMENSIONS):
-        msg = f"true_values must be 1D or 2D, got shape {true_values.shape}"
+        msg = f"true_values must be 1D or 2D, got shape {true_values.shape}."
         raise ValueError(msg)
 
     if calibration_predictions.shape != true_values.shape:
         msg = (
             f"Shape mismatch: calibration_predictions has shape {calibration_predictions.shape} "
-            f"but true_values has shape {true_values.shape}"
+            f"but true_values has shape {true_values.shape}."
         )
         raise ValueError(msg)
 
