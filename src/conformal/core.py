@@ -84,11 +84,8 @@ def compute_p_values[F: np.floating[Any]](
         msg = f"prediction_scores must be 1D or 2D, got shape {prediction_scores.shape}"
         raise ValueError(msg)
 
-    if (
-        calibration_scores.ndim == TWO_DIMENSIONS
-        and prediction_scores.ndim == TWO_DIMENSIONS
-        and calibration_scores.shape[1] != prediction_scores.shape[1]
-    ):
+    both_2d = calibration_scores.ndim == TWO_DIMENSIONS and prediction_scores.ndim == TWO_DIMENSIONS
+    if both_2d and calibration_scores.shape[1] != prediction_scores.shape[1]:
         msg = (
             f"Column mismatch: calibration_scores has {calibration_scores.shape[1]} outputs "
             f"but prediction_scores has {prediction_scores.shape[1]}"
@@ -99,12 +96,10 @@ def compute_p_values[F: np.floating[Any]](
     n_cal_plus_one = np.array(calibration_scores.shape[0] + 1, dtype=out_dtype)
 
     if calibration_scores.ndim == TWO_DIMENSIONS:
-        ranks = np.column_stack(
-            [
-                np.searchsorted(calibration_scores[:, col], prediction_scores[:, col], side="left")
-                for col in range(calibration_scores.shape[1])
-            ]
-        ).astype(out_dtype)
+        columns = []
+        for col in range(calibration_scores.shape[1]):
+            columns.append(np.searchsorted(calibration_scores[:, col], prediction_scores[:, col], side="left"))
+        ranks = np.column_stack(columns).astype(out_dtype)
     else:
         ranks = np.searchsorted(calibration_scores, prediction_scores, side="left").astype(out_dtype)
 
