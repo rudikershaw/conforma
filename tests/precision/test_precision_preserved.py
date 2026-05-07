@@ -10,7 +10,7 @@ import pytest
 import conformal
 from conformal.calibration import calibrate_classifier, calibrate_regressor
 from conformal.classifier import ConformalClassifier
-from conformal.core import compute_p_values
+from conformal.core import compute_p_values, compute_quantile
 from conformal.regressor import ConformalRegressor
 
 
@@ -41,6 +41,11 @@ def _make_predict_p_values_inputs(dtype_a, dtype_b):
     return wrapper, test_probs
 
 
+def _make_compute_quantile_inputs(dtype_a, _dtype_b):
+    scores = np.array([0.1, 0.2, 0.3, 0.5], dtype=dtype_a)
+    return scores, 0.5
+
+
 def _make_regressor_predict_inputs(dtype_a, dtype_b):
     cal_preds = np.array([2.1, 5.3, 7.8, 3.2], dtype=dtype_a)
     cal_true = np.array([2.0, 5.0, 8.0, 3.5], dtype=dtype_b)
@@ -52,6 +57,7 @@ def _make_regressor_predict_inputs(dtype_a, dtype_b):
 
 PRECISION_REGISTRY = (
     (compute_p_values, _make_compute_p_values_inputs),
+    (compute_quantile, _make_compute_quantile_inputs),
     (calibrate_classifier, _make_calibrate_classifier_inputs),
     (calibrate_regressor, _make_calibrate_regressor_inputs),
     (ConformalClassifier.predict_p_values, _make_predict_p_values_inputs),

@@ -10,7 +10,7 @@ from typing import Any
 import numpy as np
 from numpy.typing import NDArray
 
-from conformal.core import ONE_DIMENSION, TWO_DIMENSIONS
+from conformal.core import ONE_DIMENSION, TWO_DIMENSIONS, compute_quantile
 
 
 class ConformalRegressor[X, F: np.floating[Any]]:
@@ -73,21 +73,7 @@ class ConformalRegressor[X, F: np.floating[Any]]:
             last axis is ``[lower, upper]``.
 
         """
-        if coverage <= 0 or coverage > 1:
-            msg = f"coverage must be in (0, 1], got {coverage}."
-            raise ValueError(msg)
-
-        n_cal = self._calibration.shape[0]
-        index = int(np.ceil(coverage * (n_cal + 1))) - 1
-        if index >= n_cal:
-            msg = (
-                f"Calibration set too small: {n_cal} examples cannot guarantee "
-                f"coverage={coverage}. Maximum achievable coverage is "
-                f"{n_cal / (n_cal + 1):.5f}."
-            )
-            raise ValueError(msg)
-
-        quantile = self._calibration[index]
+        quantile = compute_quantile(self._calibration, coverage)
 
         predictions = self._predict_fn(inputs)
         if predictions.ndim not in (ONE_DIMENSION, TWO_DIMENSIONS):
@@ -101,6 +87,4 @@ class ConformalRegressor[X, F: np.floating[Any]]:
             )
             raise ValueError(msg)
 
-        lower = predictions - quantile
-        upper = predictions + quantile
-        return np.stack([lower, upper], axis=-1)
+        return np.stack([predictions - quantile, predictions + quantile], axis=-1)

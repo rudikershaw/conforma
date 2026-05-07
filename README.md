@@ -73,6 +73,9 @@ More calibration data means tighter prediction sets. A few hundred examples is a
 **What's the catch?**
 The guarantee relies on one assumption: calibration data and test data are drawn from the same distribution. If the world changes after calibration (new user behaviour, different sensor, etc.), you should recalibrate.
 
+**Is this really guaranteed? Where's the proof?**
+Yes. The coverage guarantee is a proven theorem, not a heuristic. The original proof comes from Vovk, Gammerman, and Shafer in *Algorithmic Learning in a Random World* (2005). If you want something shorter, Shafer and Vovk also wrote *"A Tutorial on Conformal Prediction"* (2008) in the Journal of Machine Learning Research. Fair warning: neither is light reading.
+
 ## Documentation
 
 <!-- TODO: add links once docs site is live -->

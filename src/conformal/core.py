@@ -105,3 +105,60 @@ def compute_p_values[F: np.floating[Any]](
 
     p_values: NDArray[F] = (n_cal_plus_one - ranks) / n_cal_plus_one
     return p_values
+
+
+def compute_quantile[F: np.floating[Any]](
+    calibration_scores: NDArray[F],
+    coverage: float,
+) -> NDArray[F]:
+    """Select the calibration quantile for a given coverage level.
+
+    Returns the smallest nonconformity score threshold such that the
+    resulting prediction intervals achieve the requested coverage.
+
+    Parameters
+    ----------
+    calibration_scores : NDArray
+        Sorted nonconformity scores from ``calibrate_regressor``.
+        Shape: ``(n_calibration,)`` for univariate or
+        ``(n_calibration, n_outputs)`` for multi-output.
+    coverage : float
+        Target coverage level in (0, 1].
+
+    Returns
+    -------
+    NDArray
+        The quantile value(s). Scalar-like for univariate, or shape
+        ``(n_outputs,)`` for multi-output.
+
+    Raises
+    ------
+    ValueError
+        If coverage is outside (0, 1] or the calibration set is too
+        small to achieve the requested coverage.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from conformal.core import compute_quantile
+    >>> scores = np.array([[0.1, 0.2], [0.3, 0.4], [0.5, 0.6]])
+    >>> compute_quantile(scores, coverage=0.5)
+    array([0.3, 0.4])
+
+    """
+    if coverage <= 0 or coverage > 1:
+        msg = f"coverage must be in (0, 1], got {coverage}."
+        raise ValueError(msg)
+
+    n_cal = calibration_scores.shape[0]
+    index = int(np.ceil(coverage * (n_cal + 1))) - 1
+    if index >= n_cal:
+        msg = (
+            f"Calibration set too small: {n_cal} examples cannot guarantee "
+            f"coverage={coverage}. Maximum achievable coverage is "
+            f"{n_cal / (n_cal + 1):.5f}."
+        )
+        raise ValueError(msg)
+
+    result: NDArray[F] = calibration_scores[index]
+    return result
