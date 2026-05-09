@@ -93,7 +93,6 @@ select = [
     "RUF", # ruff-specific rules
     "ARG", # flake8-unused-arguments
     "PTH", # flake8-use-pathlib
-    "S",   # bandit security
     "A",   # flake8-builtins
     "ERA", # eradicate commented-out code
     "PL",  # pylint
