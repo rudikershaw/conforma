@@ -23,7 +23,7 @@ def format_apply(session: Session) -> None:
     session.run("ruff", "format", "src", "tests", "noxfile.py")
 
 
-@session(uv_no_install_project=True, uv_quiet=True, uv_groups=["lint"])
+@session(uv_no_install_project=True, uv_quiet=True, uv_groups=["security"])
 def security(session: Session) -> None:
     """Audit dependencies for security vulnerabilities."""
     session.run("bandit", "-r", "src")

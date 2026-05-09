@@ -58,7 +58,9 @@ class ConformalClassifier[X, F: np.floating[Any]]:
         """Produce prediction sets at a given coverage level.
 
         A prediction set is a boolean mask where True means the class is
-        included. Multiple Trues in a row indicate model uncertainty.
+        included. Multiple Trues indicate the model considers more than
+        one class plausible. An empty set (all False) indicates the model
+        has no confident prediction for that example.
 
         Parameters
         ----------

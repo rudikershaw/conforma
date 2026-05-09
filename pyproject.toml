@@ -1,7 +1,7 @@
 [project]
 name = "conformal"
 version = "0.1.0"
-description = "Simple, fast, and decoupled uncertainty quantification for knowing when to trust your model's predictions."
+description = "Simple, fast, and framework agnostic uncertainty quantification for knowing when to trust your model's predictions."
 readme = "README.md"
 authors = [
     { name = "Rudi Kershaw", email = "alexander_kershaw@hotmail.co.uk" }
@@ -34,6 +34,8 @@ dev = [
 lint = [
     "ruff>=0.15.10",
     "mypy>=1.20.0",
+]
+security = [
     "pip-audit>=2.10.0",
     "bandit>=1.9.4",
 ]

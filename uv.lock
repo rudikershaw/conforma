@@ -179,10 +179,12 @@ dev = [
     { name = "nox-uv" },
 ]
 lint = [
-    { name = "bandit" },
     { name = "mypy" },
-    { name = "pip-audit" },
     { name = "ruff" },
+]
+security = [
+    { name = "bandit" },
+    { name = "pip-audit" },
 ]
 test = [
     { name = "pytest" },
@@ -199,10 +201,12 @@ dev = [
     { name = "nox-uv", specifier = ">=0.7.1" },
 ]
 lint = [
-    { name = "bandit", specifier = ">=1.9.4" },
     { name = "mypy", specifier = ">=1.20.0" },
-    { name = "pip-audit", specifier = ">=2.10.0" },
     { name = "ruff", specifier = ">=0.15.10" },
+]
+security = [
+    { name = "bandit", specifier = ">=1.9.4" },
+    { name = "pip-audit", specifier = ">=2.10.0" },
 ]
 test = [
     { name = "pytest", specifier = ">=9.0.0" },
