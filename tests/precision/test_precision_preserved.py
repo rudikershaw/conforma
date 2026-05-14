@@ -64,7 +64,13 @@ PRECISION_REGISTRY = (
     (ConformalRegressor.predict, _make_regressor_predict_inputs),
 )
 
-PRECISION_EXEMPT: frozenset[str] = frozenset({"ConformalClassifier.predict", "classifier_coverage_stability"})
+PRECISION_EXEMPT: frozenset[str] = frozenset(
+    {
+        "ConformalClassifier.predict",
+        "classifier_coverage_stability",
+        "regressor_coverage_stability",
+    }
+)
 
 
 @pytest.mark.parametrize("dtype", [np.float16, np.float32, np.float64], ids=lambda d: d.__name__)

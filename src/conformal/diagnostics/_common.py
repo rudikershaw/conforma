@@ -1,19 +1,12 @@
-"""Diagnostic tools for analysing conformal predictor behaviour.
-
-This module provides functions that help practitioners understand how
-calibration set size affects prediction quality.
-"""
+"""Shared types and utilities for diagnostic functions."""
 
 import math
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass
 from typing import Any
 
 import numpy as np
 from numpy.typing import NDArray
-
-from conformal.calibration import calibrate_classifier
-from conformal.core import compute_p_values
 
 
 @dataclass(frozen=True, slots=True)
@@ -89,6 +82,7 @@ def _resolve_sizes(
     n_data: int,
     coverage: float,
 ) -> NDArray[np.intp]:
+    """Resolve and validate the sizes to evaluate."""
     if sizes is None:
         return _default_sizes(n_data, coverage)
 
@@ -106,61 +100,9 @@ def _resolve_sizes(
     return evaluated
 
 
-def classifier_coverage_stability[F: np.floating[Any], I: np.integer[Any]](
-    calibration_probabilities: NDArray[F],
-    true_labels: NDArray[I],
-    coverage: float = 0.90,
-    config: DiagnosticConfig | None = None,
-) -> CoverageStabilityResult:
-    """Measure how calibration set size affects prediction set quality.
-
-    Subsamples the provided data at various sizes, runs the full
-    calibrate-and-predict loop at each size, and reports how empirical
-    coverage and prediction set size vary. Use this to decide how much
-    calibration data you need.
-
-    Parameters
-    ----------
-    calibration_probabilities : NDArray[F]
-        Model output scores on the calibration set (e.g. probabilities, logits).
-        Shape: ``(n_examples, n_classes)``
-    true_labels : NDArray[I]
-        True class labels for the calibration set.
-        Shape: ``(n_examples,)``
-    coverage : float
-        Target coverage level in (0, 1). Defaults to 0.90.
-    config : DiagnosticConfig
-        Configuration for the diagnostic. Controls which sizes to
-        evaluate, how many repetitions to run, and the random seed.
-
-    Returns
-    -------
-    CoverageStabilityResult
-        A frozen dataclass containing the sizes evaluated and the mean
-        and standard deviation of empirical coverage and prediction set
-        size at each.
-
-    Examples
-    --------
-    >>> import numpy as np
-    >>> from conformal.diagnostics import classifier_coverage_stability, DiagnosticConfig
-    >>> probs = np.array([[0.9, 0.1]] * 30 + [[0.5, 0.5]] * 20)
-    >>> labels = np.array([0] * 30 + [1] * 20)
-    >>> config = DiagnosticConfig(sizes=[20, 40], n_repetitions=10, rng=42)
-    >>> result = classifier_coverage_stability(probs, labels, coverage=0.5, config=config)
-    >>> len(result.sizes)
-    2
-
-    """
-    if config is None:
-        config = DiagnosticConfig()
-
-    n_data = calibration_probabilities.shape[0]
-    if true_labels.shape[0] != n_data:
-        msg = (
-            f"Shape mismatch: calibration_probabilities has {n_data} examples "
-            f"but true_labels has {true_labels.shape[0]}."
-        )
+def _validate_diagnostic_inputs(n_predictions: int, n_labels: int, coverage: float, config: DiagnosticConfig) -> None:
+    if n_labels != n_predictions:
+        msg = f"Shape mismatch: got {n_predictions} model outputs but {n_labels} true values."
         raise ValueError(msg)
 
     if coverage <= 0 or coverage >= 1:
@@ -171,6 +113,28 @@ def classifier_coverage_stability[F: np.floating[Any], I: np.integer[Any]](
         msg = f"n_repetitions must be a positive integer, got {config.n_repetitions}."
         raise ValueError(msg)
 
+
+def _run_coverage_stability[F: np.floating[Any]](
+    n_data: int,
+    coverage: float,
+    config: DiagnosticConfig,
+    trial_fn: Callable[[NDArray[np.intp], NDArray[np.intp], float], tuple[F, F]],
+) -> CoverageStabilityResult:
+    """Run the shared subsampling loop for coverage stability diagnostics.
+
+    Parameters
+    ----------
+    n_data : int
+        Total number of examples in the dataset.
+    coverage : float
+        Target coverage level, already validated.
+    config : DiagnosticConfig
+        Configuration, already validated.
+    trial_fn : Callable
+        Callback that receives ``(cal_idx, test_idx, coverage)`` and
+        returns ``(coverage_value, set_size_value)`` for one trial.
+
+    """
     rng = config.rng
     generator = rng if isinstance(rng, np.random.Generator) else np.random.default_rng(rng)
     evaluated_sizes = _resolve_sizes(config.sizes, n_data, coverage)
@@ -180,8 +144,6 @@ def classifier_coverage_stability[F: np.floating[Any], I: np.integer[Any]](
     mean_set_sizes: list[F] = []
     std_set_sizes: list[F] = []
 
-    one = np.array(1, dtype=calibration_probabilities.dtype)
-
     for size in evaluated_sizes:
         trial_coverages: list[F] = []
         trial_set_sizes: list[F] = []
@@ -190,17 +152,9 @@ def classifier_coverage_stability[F: np.floating[Any], I: np.integer[Any]](
         for _ in range(config.n_repetitions):
             indices = generator.choice(n_data, size=int(size), replace=False)
             cal_idx, test_idx = indices[:n_cal], indices[n_cal:]
-
-            scores = calibrate_classifier(
-                calibration_probabilities[cal_idx],
-                true_labels[cal_idx],
-            )
-            p_values = compute_p_values(scores, one - calibration_probabilities[test_idx])
-            prediction_sets = p_values >= coverage
-
-            hits = prediction_sets[np.arange(len(test_idx)), true_labels[test_idx]]
-            trial_coverages.append(hits.mean())
-            trial_set_sizes.append(prediction_sets.sum(axis=1).mean())
+            cov, set_size = trial_fn(cal_idx, test_idx, coverage)
+            trial_coverages.append(cov)
+            trial_set_sizes.append(set_size)
 
         mean_coverages.append(np.mean(trial_coverages))
         std_coverages.append(np.std(trial_coverages))
@@ -209,8 +163,8 @@ def classifier_coverage_stability[F: np.floating[Any], I: np.integer[Any]](
 
     return CoverageStabilityResult(
         sizes=evaluated_sizes,
-        mean_coverage=np.array(mean_coverages, dtype=np.float64),
-        std_coverage=np.array(std_coverages, dtype=np.float64),
-        mean_set_size=np.array(mean_set_sizes, dtype=np.float64),
-        std_set_size=np.array(std_set_sizes, dtype=np.float64),
+        mean_coverage=np.array(mean_coverages),
+        std_coverage=np.array(std_coverages),
+        mean_set_size=np.array(mean_set_sizes),
+        std_set_size=np.array(std_set_sizes),
     )
