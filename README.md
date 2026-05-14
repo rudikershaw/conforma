@@ -57,7 +57,7 @@ p_values = wrapper.predict_p_values(X_test)
 #            [0.87, 0.79, 0.11]])
 ```
 
-Each value is the minimum coverage level at which that class would enter the prediction set. Higher means more plausible. This is useful when you want to rank classes by plausibility, or apply different coverage thresholds after the fact without re-running the model. The p-values themselves carry a guarantee: for the true class, the probability of its p-value falling below any threshold is at most that threshold.
+Each value is a conformal p-value measuring how plausible that class is. Higher means the model was less surprised — the class is more consistent with the calibration data. A class enters the prediction set at coverage level `c` when its p-value is at least `1 - c`. This is useful when you want to rank classes by plausibility, or apply different coverage thresholds after the fact without re-running the model.
 
 ## FAQ
 

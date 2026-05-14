@@ -73,7 +73,7 @@ def classifier_coverage_stability[F: np.floating[Any], I: np.integer[Any]](
             true_labels[cal_idx],
         )
         p_values = compute_p_values(scores, one - calibration_probabilities[test_idx])
-        prediction_sets = p_values >= coverage
+        prediction_sets = p_values >= 1 - coverage
 
         hits = prediction_sets[np.arange(len(test_idx)), true_labels[test_idx]]
         return hits.mean(), prediction_sets.sum(axis=1).mean()

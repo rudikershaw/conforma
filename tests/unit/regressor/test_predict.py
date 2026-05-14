@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 from conformal.regressor import ConformalRegressor
-from tests.conftest import default_benchmark
+from tests.unit.conftest import default_benchmark
 
 
 @default_benchmark

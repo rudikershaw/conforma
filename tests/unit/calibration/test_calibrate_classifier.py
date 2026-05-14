@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 from conformal.calibration import calibrate_classifier
-from tests.conftest import default_benchmark
+from tests.unit.conftest import default_benchmark
 
 
 @default_benchmark

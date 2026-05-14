@@ -79,7 +79,7 @@ class ConformalClassifier[X, F: np.floating[Any]]:
         if coverage <= 0 or coverage > 1:
             msg = f"coverage must be in (0, 1], got {coverage}."
             raise ValueError(msg)
-        return self.predict_p_values(inputs) >= coverage
+        return self.predict_p_values(inputs) >= 1 - coverage
 
     def predict_p_values(self, inputs: X) -> NDArray[F]:
         """Compute conformal p-values for each class.

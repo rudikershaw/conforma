@@ -51,7 +51,7 @@ def tests(session: Session) -> None:
 
     session.run(
         "pytest",
-        "tests",
+        "tests/unit",
         "--doctest-modules",
         "--pyargs",
         "conformal",
@@ -59,3 +59,9 @@ def tests(session: Session) -> None:
         "--cov-report=term-missing",
         "--cov-report=html",
     )
+
+
+@session(python=["3.12", "3.13"], uv_quiet=True, uv_groups=["integration"])
+def integration(session: Session) -> None:
+    """Run integration tests against real models and datasets."""
+    session.run("pytest", "tests/integration", "-o", "addopts=")
