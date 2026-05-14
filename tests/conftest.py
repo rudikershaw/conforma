@@ -7,5 +7,5 @@ default_benchmark = pytest.mark.benchmark(
     disable_gc=True,
     warmup=True,
     min_rounds=10,
-    max_time=0.005,  # 5 ms timeout
+    max_time=0.02,
 )

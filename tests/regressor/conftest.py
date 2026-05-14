@@ -7,7 +7,7 @@ from conformal.calibration import calibrate_regressor
 from conformal.regressor import ConformalRegressor
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def wrapper() -> ConformalRegressor:
     """A univariate ConformalRegressor with an identity predict_fn."""
     cal_preds = np.array([2.1, 5.3, 7.8, 3.2])
@@ -16,7 +16,7 @@ def wrapper() -> ConformalRegressor:
     return ConformalRegressor(predict_fn=lambda x: x, calibration=calibration)
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def multioutput_wrapper() -> ConformalRegressor:
     """A multi-output ConformalRegressor with an identity predict_fn."""
     cal_preds = np.array([[1.1, 2.2], [3.4, 4.3], [5.6, 6.5], [7.1, 8.2]])
