@@ -5,7 +5,7 @@ from nox_uv import session
 
 options.default_venv_backend = "uv"
 options.reuse_existing_virtualenvs = True
-options.sessions = ["lint", "security", "tests"]
+options.sessions = ["lint", "security", "tests", "integration"]
 
 
 @session(uv_no_install_project=True, uv_quiet=True, uv_groups=["lint", "dev"])
@@ -27,7 +27,7 @@ def format_apply(session: Session) -> None:
 def security(session: Session) -> None:
     """Audit dependencies for security vulnerabilities."""
     session.run("bandit", "-r", "src")
-    session.run("pip-audit")
+    session.run("uv", "audit", external=True)
 
 
 @session(python=["3.12", "3.13"], uv_quiet=True, uv_groups=["test"])
