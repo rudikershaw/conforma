@@ -57,6 +57,52 @@ class CoverageStabilityResult:
     std_set_size: NDArray[np.float64]
 
 
+@dataclass(frozen=True, slots=True)
+class CalibrationPlan:
+    """Results from a calibration plan analysis.
+
+    The top-level ``coverage`` and ``cal_size`` attributes are the
+    recommended operating point: the highest empirical coverage where
+    the mean prediction set size stays within the user's constraint,
+    and the smallest calibration set size that achieves it reliably.
+
+    The remaining attributes are the columns of a table, sorted by
+    ``mean_coverage``. A row is represented by any index ``i`` across
+    each array.
+
+    Parameters
+    ----------
+    coverage : float
+        Recommended coverage level (empirical, measured over trials).
+    cal_size : int
+        Recommended minimum calibration set size.
+    mean_coverage : NDArray[np.float64]
+        Mean empirical coverage at each operating point.
+        Shape: ``(n_rows,)``
+    std_coverage : NDArray[np.float64]
+        Standard deviation of empirical coverage at each operating point.
+        Shape: ``(n_rows,)``
+    cal_sizes : NDArray[np.intp]
+        Smallest calibration set size that reliably achieves each row's
+        coverage level. Shape: ``(n_rows,)``
+    mean_set_size : NDArray[np.float64]
+        Mean prediction set size at each operating point.
+        Shape: ``(n_rows,)``
+    std_set_size : NDArray[np.float64]
+        Standard deviation of prediction set size at each operating point.
+        Shape: ``(n_rows,)``
+
+    """
+
+    coverage: float
+    cal_size: int
+    mean_coverage: NDArray[np.float64]
+    std_coverage: NDArray[np.float64]
+    cal_sizes: NDArray[np.intp]
+    mean_set_size: NDArray[np.float64]
+    std_set_size: NDArray[np.float64]
+
+
 def _minimum_size(coverage: float) -> int:
     min_cal = math.ceil(coverage / (1 - coverage))
     return max(min_cal * 2 + 2, 4)

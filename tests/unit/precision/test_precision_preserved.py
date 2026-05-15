@@ -67,6 +67,7 @@ PRECISION_REGISTRY = (
 PRECISION_EXEMPT: frozenset[str] = frozenset(
     {
         "ConformalClassifier.predict",
+        "classifier_calibration_plan",
         "classifier_coverage_stability",
         "regressor_coverage_stability",
     }
