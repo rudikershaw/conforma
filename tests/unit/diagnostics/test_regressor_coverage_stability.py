@@ -4,8 +4,8 @@ import numpy as np
 import pytest
 
 from conformal.diagnostics import (
-    CoverageStabilityResult,
     DiagnosticConfig,
+    RegressorCoverageStability,
     regressor_coverage_stability,
 )
 from tests.unit.conftest import default_benchmark
@@ -25,7 +25,7 @@ def test_returns_coverage_stability_result(synthetic_data) -> None:
     preds, true_vals = synthetic_data
     config = DiagnosticConfig(sizes=[20, 50], n_repetitions=5, rng=0)
     result = regressor_coverage_stability(preds, true_vals, coverage=0.5, config=config)
-    assert isinstance(result, CoverageStabilityResult)
+    assert isinstance(result, RegressorCoverageStability)
 
 
 def test_result_shapes_match_sizes(synthetic_data) -> None:
@@ -37,8 +37,8 @@ def test_result_shapes_match_sizes(synthetic_data) -> None:
     assert len(result.sizes) == expected_length
     assert len(result.mean_coverage) == expected_length
     assert len(result.std_coverage) == expected_length
-    assert len(result.mean_set_size) == expected_length
-    assert len(result.std_set_size) == expected_length
+    assert len(result.mean_interval_width) == expected_length
+    assert len(result.std_interval_width) == expected_length
 
 
 @default_benchmark
@@ -72,7 +72,7 @@ def test_perfect_model(benchmark) -> None:
     config = DiagnosticConfig(sizes=[20, 60], n_repetitions=5, rng=0)
     result = benchmark(regressor_coverage_stability, values, values, coverage=0.5, config=config)
     np.testing.assert_array_less(0.99, result.mean_coverage)
-    np.testing.assert_allclose(result.mean_set_size, 0.0, atol=0.01)
+    np.testing.assert_allclose(result.mean_interval_width, 0.0, atol=0.01)
 
 
 @default_benchmark
@@ -102,7 +102,7 @@ def test_reproducible_with_seed(synthetic_data) -> None:
     config2 = DiagnosticConfig(sizes=[30, 60], n_repetitions=5, rng=123)
     r2 = regressor_coverage_stability(preds, true_vals, config=config2)
     np.testing.assert_array_equal(r1.mean_coverage, r2.mean_coverage)
-    np.testing.assert_array_equal(r1.mean_set_size, r2.mean_set_size)
+    np.testing.assert_array_equal(r1.mean_interval_width, r2.mean_interval_width)
 
 
 def test_single_size(synthetic_data) -> None:

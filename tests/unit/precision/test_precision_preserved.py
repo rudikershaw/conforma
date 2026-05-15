@@ -69,6 +69,7 @@ PRECISION_EXEMPT: frozenset[str] = frozenset(
         "ConformalClassifier.predict",
         "classifier_calibration_plan",
         "classifier_coverage_stability",
+        "regressor_calibration_plan",
         "regressor_coverage_stability",
     }
 )

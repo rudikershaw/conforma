@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 from conformal.diagnostics import (
-    CalibrationPlan,
+    ClassifierCalibrationPlan,
     DiagnosticConfig,
     classifier_calibration_plan,
 )
@@ -32,7 +32,7 @@ def test_returns_calibration_plan(synthetic_data) -> None:
     probs, labels = synthetic_data
     config = DiagnosticConfig(sizes=[20, 50], n_repetitions=5, rng=0)
     result = classifier_calibration_plan(probs, labels, config=config)
-    assert isinstance(result, CalibrationPlan)
+    assert isinstance(result, ClassifierCalibrationPlan)
 
 
 def test_recommendation_respects_max_set_size(synthetic_data) -> None:

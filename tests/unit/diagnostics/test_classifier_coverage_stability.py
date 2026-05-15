@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 from conformal.diagnostics import (
-    CoverageStabilityResult,
+    ClassifierCoverageStability,
     DiagnosticConfig,
     classifier_coverage_stability,
 )
@@ -31,7 +31,7 @@ def test_returns_coverage_stability_result(synthetic_data) -> None:
     probs, labels = synthetic_data
     config = DiagnosticConfig(sizes=[20, 50], n_repetitions=5, rng=0)
     result = classifier_coverage_stability(probs, labels, coverage=0.5, config=config)
-    assert isinstance(result, CoverageStabilityResult)
+    assert isinstance(result, ClassifierCoverageStability)
 
 
 def test_result_shapes_match_sizes(synthetic_data) -> None:
