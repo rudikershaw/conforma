@@ -1,8 +1,4 @@
-"""Integration test: diabetes regression with conformal prediction.
-
-Uses scikit-learn's Diabetes dataset and a ridge regression model to exercise
-the full conformal regression workflow end-to-end.
-"""
+"""Predicting diabetes progression measures with scikit-learn and conformal prediction."""
 
 import numpy as np
 from sklearn.datasets import load_diabetes
@@ -19,8 +15,8 @@ def test_diabetes_regression():
     # Load a real dataset
     inputs, targets = load_diabetes(return_X_y=True)
 
-    # Split into train and a held-out pool for calibration + testing
-    train_inputs, pool_inputs, train_targets, pool_targets = train_test_split(
+    # Split into train and a held-out reserve for calibration + testing
+    train_inputs, reserve_inputs, train_targets, reserve_targets = train_test_split(
         inputs, targets, test_size=0.5, random_state=0
     )
 
@@ -29,18 +25,18 @@ def test_diabetes_regression():
     model.fit(train_inputs, train_targets)
 
     # Use diagnostics to recommend a coverage level and calibration set size
-    pool_predictions = model.predict(pool_inputs)
+    reserve_predictions = model.predict(reserve_inputs)
     config = DiagnosticConfig(rng=42)
     plan = regressor_calibration_plan(
-        pool_predictions, pool_targets, max_interval_width=MAX_INTERVAL_WIDTH, config=config
+        reserve_predictions, reserve_targets, max_interval_width=MAX_INTERVAL_WIDTH, config=config
     )
 
-    # Split the pool into calibration and test using the recommended size
+    # Split the reserve into calibration and test using the recommended size
     rng = np.random.default_rng(42)
-    indices = rng.permutation(len(pool_targets))
+    indices = rng.permutation(len(reserve_targets))
     cal_idx, test_idx = indices[: plan.cal_size], indices[plan.cal_size :]
-    cal_inputs, cal_targets = pool_inputs[cal_idx], pool_targets[cal_idx]
-    test_inputs, test_targets = pool_inputs[test_idx], pool_targets[test_idx]
+    cal_inputs, cal_targets = reserve_inputs[cal_idx], reserve_targets[cal_idx]
+    test_inputs, test_targets = reserve_inputs[test_idx], reserve_targets[test_idx]
 
     # Calibrate and wrap the model
     calibration = calibrate_regressor(model.predict(cal_inputs), cal_targets)

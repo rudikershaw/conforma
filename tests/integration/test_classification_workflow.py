@@ -1,8 +1,4 @@
-"""Integration test: breast cancer classification with conformal prediction.
-
-Uses scikit-learn's Breast Cancer Wisconsin dataset and a logistic regression
-model to exercise the full conformal classification workflow end-to-end.
-"""
+"""Breast cancer classification with scikit-learn and conformal prediction."""
 
 import numpy as np
 from sklearn.datasets import load_breast_cancer
@@ -19,8 +15,8 @@ def test_breast_cancer_classification():
     # Load a real dataset
     inputs, labels = load_breast_cancer(return_X_y=True)
 
-    # Split into train and a held-out pool for calibration + testing
-    train_inputs, pool_inputs, train_labels, pool_labels = train_test_split(
+    # Split our data into training and a held-out reserve set for calibration + testing
+    train_inputs, reserve_inputs, train_labels, reserve_labels = train_test_split(
         inputs, labels, test_size=0.5, random_state=42
     )
 
@@ -29,16 +25,16 @@ def test_breast_cancer_classification():
     model.fit(train_inputs, train_labels)
 
     # Use diagnostics to recommend a coverage level and calibration set size
-    pool_probs = model.predict_proba(pool_inputs)
+    reserve_probs = model.predict_proba(reserve_inputs)
     config = DiagnosticConfig(rng=42)
-    plan = classifier_calibration_plan(pool_probs, pool_labels, max_set_size=MAX_SET_SIZE, config=config)
+    plan = classifier_calibration_plan(reserve_probs, reserve_labels, max_set_size=MAX_SET_SIZE, config=config)
 
-    # Split the pool into calibration and test using the recommended size
+    # Split the reserve set into calibration and test sets using the recommended size
     rng = np.random.default_rng(42)
-    indices = rng.permutation(len(pool_labels))
+    indices = rng.permutation(len(reserve_labels))
     cal_idx, test_idx = indices[: plan.cal_size], indices[plan.cal_size :]
-    cal_inputs, cal_labels = pool_inputs[cal_idx], pool_labels[cal_idx]
-    test_inputs, test_labels = pool_inputs[test_idx], pool_labels[test_idx]
+    cal_inputs, cal_labels = reserve_inputs[cal_idx], reserve_labels[cal_idx]
+    test_inputs, test_labels = reserve_inputs[test_idx], reserve_labels[test_idx]
 
     # Calibrate and wrap the model
     calibration = calibrate_classifier(model.predict_proba(cal_inputs), cal_labels)
