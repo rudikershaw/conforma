@@ -5,6 +5,7 @@ The following code is an example of using conformal to calibrate a scikit-learn 
 <!-- INSERT_CODE:tests/integration/test_classification_workflow.py -->
 ```py
 """Breast cancer classification with scikit-learn and conformal prediction."""
+
 import numpy as np
 from sklearn.datasets import load_breast_cancer
 from sklearn.linear_model import LogisticRegression

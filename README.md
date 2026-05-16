@@ -1,5 +1,3 @@
-<!-- logo / banner placeholder -->
-
 <div align="center">
 
 # conformal
@@ -19,11 +17,7 @@ Conformal prediction is a technique for getting honest uncertainty estimates fro
 
 ## Installation
 
-<!-- TODO: update once published to PyPI -->
-
-```bash
-pip install conformal
-```
+At this time, this library is not published to pypi. I will update the README when it is published and available. 
 
 ## Quick start
 
@@ -57,7 +51,7 @@ p_values = wrapper.predict_p_values(X_test)
 #            [0.87, 0.79, 0.11]])
 ```
 
-Each value is a conformal p-value measuring how plausible that class is. Higher means the model was less surprised — the class is more consistent with the calibration data. A class enters the prediction set at coverage level `c` when its p-value is at least `1 - c`. This is useful when you want to rank classes by plausibility, or apply different coverage thresholds after the fact without re-running the model.
+Each value is a conformal p-value measuring how plausible that class is. Higher means the model was less surprised. A class enters the prediction set at coverage level `c` when its p-value is at least `1 - c`. This is useful when you want to rank classes by plausibility, or apply different coverage thresholds after the fact without re-running the model.
 
 ## FAQ
 
@@ -74,7 +68,7 @@ More calibration data means tighter prediction sets. A few hundred examples is a
 The guarantee relies on one assumption: calibration data and test data are drawn from the same distribution. If the world changes after calibration (new user behaviour, different sensor, etc.), you should recalibrate.
 
 **Is this really guaranteed? Where's the proof?**
-Yes. The coverage guarantee is a proven theorem, not a heuristic. The original proof comes from Vovk, Gammerman, and Shafer in *Algorithmic Learning in a Random World* (2005). If you want something shorter, Shafer and Vovk also wrote *"A Tutorial on Conformal Prediction"* (2008) in the Journal of Machine Learning Research. Fair warning: neither is light reading. For a more practical introduction, Angelopoulos and Bates wrote *"A Gentle Introduction to Conformal Prediction and Distribution-Free Uncertainty Quantification"* (2022), which is a great starting point for practitioners.
+Yes. The coverage guarantee is a proven. The original proof comes from Vovk, Gammerman, and Shafer in *Algorithmic Learning in a Random World* (2005). If you want something shorter, Shafer and Vovk also wrote *"A Tutorial on Conformal Prediction"* (2008) in the Journal of Machine Learning Research. Fair warning, neither is light reading. For a more practical introduction, Angelopoulos and Bates wrote *"A Gentle Introduction to Conformal Prediction and Distribution-Free Uncertainty Quantification"* (2022), which is an easier read.
 
 ## Documentation
 

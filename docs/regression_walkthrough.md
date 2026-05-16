@@ -4,8 +4,7 @@ The following code is an example of using conformal to calibrate a scikit-learn 
 
 <!-- INSERT_CODE:tests/integration/test_regression_workflow.py -->
 ```py
-"""Predicting diabetes progression measures with scikit-learn and conformal prediction. 
-"""
+"""Predicting diabetes progression measures with scikit-learn and conformal prediction."""
 
 import numpy as np
 from sklearn.datasets import load_diabetes
