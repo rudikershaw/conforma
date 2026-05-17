@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from conformal.diagnostics import (
+from conforma.diagnostics import (
     ClassifierCalibrationPlan,
     DiagnosticConfig,
     classifier_calibration_plan,

@@ -1,5 +1,5 @@
 [project]
-name = "conformal"
+name = "conforma"
 version = "0.1.0"
 description = "Simple, fast, and framework agnostic uncertainty quantification for knowing when to trust your model's predictions."
 readme = "README.md"
@@ -22,9 +22,9 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/rudikershaw/conformal"
-Repository = "https://github.com/rudikershaw/conformal"
-Issues = "https://github.com/rudikershaw/conformal/issues"
+Homepage = "https://github.com/rudikershaw/conforma"
+Repository = "https://github.com/rudikershaw/conforma"
+Issues = "https://github.com/rudikershaw/conforma/issues"
 
 [dependency-groups]
 dev = [

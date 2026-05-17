@@ -5,8 +5,8 @@ from sklearn.datasets import load_breast_cancer
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 
-from conformal import ConformalClassifier, calibrate_classifier
-from conformal.diagnostics import DiagnosticConfig, classifier_calibration_plan
+from conforma import ConformalClassifier, calibrate_classifier
+from conforma.diagnostics import DiagnosticConfig, classifier_calibration_plan
 
 MAX_SET_SIZE = 1.05
 

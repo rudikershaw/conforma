@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from conformal.classifier import ConformalClassifier
+from conforma.classifier import ConformalClassifier
 from tests.unit.conftest import default_benchmark
 
 

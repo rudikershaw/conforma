@@ -3,8 +3,8 @@
 import numpy as np
 import pytest
 
-from conformal.calibration import calibrate_regressor
-from conformal.regressor import ConformalRegressor
+from conforma.calibration import calibrate_regressor
+from conforma.regressor import ConformalRegressor
 
 
 @pytest.fixture(scope="module")

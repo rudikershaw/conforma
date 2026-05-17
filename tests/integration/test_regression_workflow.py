@@ -5,8 +5,8 @@ from sklearn.datasets import load_diabetes
 from sklearn.linear_model import Ridge
 from sklearn.model_selection import train_test_split
 
-from conformal import ConformalRegressor, calibrate_regressor
-from conformal.diagnostics import DiagnosticConfig, regressor_calibration_plan
+from conforma import ConformalRegressor, calibrate_regressor
+from conforma.diagnostics import DiagnosticConfig, regressor_calibration_plan
 
 MAX_INTERVAL_WIDTH = 250.0
 

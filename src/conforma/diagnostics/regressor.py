@@ -7,9 +7,9 @@ from typing import Any
 import numpy as np
 from numpy.typing import NDArray
 
-from conformal.calibration import calibrate_regressor
-from conformal.core import compute_quantile
-from conformal.diagnostics._common import (
+from conforma.calibration import calibrate_regressor
+from conforma.core import compute_quantile
+from conforma.diagnostics._common import (
     DiagnosticConfig,
     _CalibrationPlan,
     _CoverageStabilityResult,
@@ -123,7 +123,7 @@ def regressor_coverage_stability[F: np.floating[Any]](
     Examples
     --------
     >>> import numpy as np
-    >>> from conformal.diagnostics import regressor_coverage_stability, DiagnosticConfig
+    >>> from conforma.diagnostics import regressor_coverage_stability, DiagnosticConfig
     >>> preds = np.array([2.1, 5.3, 7.8, 3.2, 1.0, 4.5, 6.2, 8.1, 2.5, 3.8])
     >>> true = np.array([2.0, 5.0, 8.0, 3.5, 1.2, 4.0, 6.0, 8.5, 2.8, 3.5])
     >>> config = DiagnosticConfig(sizes=[6, 8], n_repetitions=10, rng=42)

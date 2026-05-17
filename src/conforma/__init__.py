@@ -6,11 +6,11 @@ uncertainty estimates from ML models.
 
 from importlib.metadata import version
 
-from conformal.calibration import calibrate_classifier, calibrate_regressor
-from conformal.classifier import ConformalClassifier
-from conformal.regressor import ConformalRegressor
+from conforma.calibration import calibrate_classifier, calibrate_regressor
+from conforma.classifier import ConformalClassifier
+from conforma.regressor import ConformalRegressor
 
-__version__ = version("conformal")
+__version__ = version("conforma")
 
 __all__ = [
     "ConformalClassifier",

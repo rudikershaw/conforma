@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from conformal.classifier import ConformalClassifier
+from conforma.classifier import ConformalClassifier
 
 
 def test_calibration_must_be_1d() -> None:

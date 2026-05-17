@@ -1,6 +1,6 @@
 # Diagnostics API
 
-The `conformal.diagnostics` module provides tools for understanding how calibration set size affects conformal prediction quality. It includes shared configuration and both classifier and regressor diagnostics.
+The `conforma.diagnostics` module provides tools for understanding how calibration set size affects conformal prediction quality. It includes shared configuration and both classifier and regressor diagnostics.
 
 ## Key exports
 

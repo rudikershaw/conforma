@@ -1,1 +1,1 @@
-"""Integration tests for the conformal library."""
+"""Integration tests for the conforma library."""

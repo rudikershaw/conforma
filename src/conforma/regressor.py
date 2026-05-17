@@ -10,7 +10,7 @@ from typing import Any
 import numpy as np
 from numpy.typing import NDArray
 
-from conformal.core import ONE_DIMENSION, TWO_DIMENSIONS, compute_quantile
+from conforma.core import ONE_DIMENSION, TWO_DIMENSIONS, compute_quantile
 
 
 class ConformalRegressor[X, F: np.floating[Any]]:
@@ -33,7 +33,7 @@ class ConformalRegressor[X, F: np.floating[Any]]:
     Examples
     --------
     >>> import numpy as np
-    >>> from conformal import ConformalRegressor, calibrate_regressor
+    >>> from conforma import ConformalRegressor, calibrate_regressor
     >>> cal_preds = np.array([2.1, 5.3, 7.8, 3.2])
     >>> cal_true = np.array([2.0, 5.0, 8.0, 3.5])
     >>> calibration = calibrate_regressor(cal_preds, cal_true)

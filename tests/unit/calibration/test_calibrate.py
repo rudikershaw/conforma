@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from conformal.calibration import _calibrate
+from conforma.calibration import _calibrate
 from tests.unit.conftest import default_benchmark
 
 

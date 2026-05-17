@@ -1,6 +1,6 @@
-# Using conformal with a Classifier
+# Using conforma with a Classifier
 
-The following code is an example of using conformal to calibrate a scikit-learn classifier (LogisticRegression) from the project's integration tests. You can find the code file in this project under [tests/integration/test_classification_workflow.py](tests/integration/test_classification_workflow.py). After reading through the example below, you can find a discussion of what each step achieves below the code example.
+The following code is an example of using conforma to calibrate a scikit-learn classifier (LogisticRegression) from the project's integration tests. You can find the code file in this project under [tests/integration/test_classification_workflow.py](tests/integration/test_classification_workflow.py). After reading through the example below, you can find a discussion of what each step achieves below the code example.
 
 <!-- INSERT_CODE:tests/integration/test_classification_workflow.py -->
 ```py
@@ -11,8 +11,8 @@ from sklearn.datasets import load_breast_cancer
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 
-from conformal import ConformalClassifier, calibrate_classifier
-from conformal.diagnostics import DiagnosticConfig, classifier_calibration_plan
+from conforma import ConformalClassifier, calibrate_classifier
+from conforma.diagnostics import DiagnosticConfig, classifier_calibration_plan
 
 MAX_SET_SIZE = 1.05
 

@@ -57,8 +57,8 @@ def tests(session: Session) -> None:
         "tests/unit",
         "--doctest-modules",
         "--pyargs",
-        "conformal",
-        "--cov=conformal",
+        "conforma",
+        "--cov=conforma",
         "--cov-report=term-missing",
         "--cov-report=html",
     )

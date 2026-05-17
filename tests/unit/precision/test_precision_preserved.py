@@ -7,11 +7,11 @@ import pkgutil
 import numpy as np
 import pytest
 
-import conformal
-from conformal.calibration import calibrate_classifier, calibrate_regressor
-from conformal.classifier import ConformalClassifier
-from conformal.core import compute_p_values, compute_quantile
-from conformal.regressor import ConformalRegressor
+import conforma
+from conforma.calibration import calibrate_classifier, calibrate_regressor
+from conforma.classifier import ConformalClassifier
+from conforma.core import compute_p_values, compute_quantile
+from conforma.regressor import ConformalRegressor
 
 
 def _make_compute_p_values_inputs(dtype_a, dtype_b):
@@ -113,7 +113,7 @@ def test_mixed_precision_uses_result_type(func, factory, dtype_a, dtype_b):
 def test_precision_registry_is_complete():
     """Test that every public callable is registered for precision testing or explicitly exempt."""
     public_callables: set[str] = set()
-    for module_info in pkgutil.walk_packages(conformal.__path__, prefix="conformal."):
+    for module_info in pkgutil.walk_packages(conforma.__path__, prefix="conforma."):
         module = importlib.import_module(module_info.name)
         for name, obj in inspect.getmembers(module, inspect.isfunction):
             if not name.startswith("_") and getattr(obj, "__module__", "") == module_info.name:
@@ -125,8 +125,8 @@ def test_precision_registry_is_complete():
                 if not method_name.startswith("_"):
                     public_callables.add(f"{class_name}.{method_name}")
 
-    for name, obj in inspect.getmembers(conformal, inspect.isfunction):
-        if not name.startswith("_") and getattr(obj, "__module__", "").startswith("conformal"):
+    for name, obj in inspect.getmembers(conforma, inspect.isfunction):
+        if not name.startswith("_") and getattr(obj, "__module__", "").startswith("conforma"):
             public_callables.add(name)
 
     public_callables -= PRECISION_EXEMPT

@@ -3,8 +3,8 @@
 import numpy as np
 import pytest
 
-from conformal.calibration import calibrate_classifier
-from conformal.classifier import ConformalClassifier
+from conforma.calibration import calibrate_classifier
+from conforma.classifier import ConformalClassifier
 
 
 @pytest.fixture(scope="module")

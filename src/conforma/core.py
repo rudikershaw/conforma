@@ -50,7 +50,7 @@ def compute_p_values[F: np.floating[Any]](
     With classifier calibration scores and per-class prediction scores:
 
     >>> import numpy as np
-    >>> from conformal.core import compute_p_values
+    >>> from conforma.core import compute_p_values
     >>> calibration_scores = np.array([0.1, 0.3, 0.5, 0.7])
     >>> prediction_scores = np.array([[0.2, 0.8], [0.6, 0.4]])
     >>> p_values = compute_p_values(calibration_scores, prediction_scores)
@@ -140,7 +140,7 @@ def compute_quantile[F: np.floating[Any]](
     Examples
     --------
     >>> import numpy as np
-    >>> from conformal.core import compute_quantile
+    >>> from conforma.core import compute_quantile
     >>> scores = np.array([[0.1, 0.2], [0.3, 0.4], [0.5, 0.6]])
     >>> compute_quantile(scores, coverage=0.5)
     array([0.3, 0.4])

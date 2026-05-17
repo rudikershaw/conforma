@@ -1,10 +1,10 @@
 <div align="center">
 
-# conformal
+# conforma
 
 **Know when to trust your model's predictions.**
 
-[![Version 0.1.0](https://img.shields.io/badge/version-0.1.0-orange?style=for-the-badge)](https://github.com/rudikershaw/conformal)
+[![Version 0.1.0](https://img.shields.io/badge/version-0.1.0-orange?style=for-the-badge)](https://github.com/rudikershaw/conforma)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org)
 [![NumPy only](https://img.shields.io/badge/deps-numpy_only-013243?style=for-the-badge&logo=numpy&logoColor=white)](https://numpy.org)
 [![MIT License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)](LICENSE)
@@ -13,7 +13,7 @@
 
 ---
 
-Conformal prediction is a technique for getting honest uncertainty estimates from trained ML models. `conformal` is a lightweight, framework-agnostic Python library that makes it easy to apply. Give it a held-out calibration set and it will wrap your model to produce prediction sets (for classifiers) or prediction intervals (for regressors) with real statistical guarantees. No changes to your model, no retraining, and only numpy as a dependency.
+Conformal prediction is a technique for getting honest uncertainty estimates from trained ML models. `conforma` is a lightweight, framework-agnostic Python library that makes it easy to apply. Give it a held-out calibration set and it will wrap your model to produce prediction sets (for classifiers) or prediction intervals (for regressors) with real statistical guarantees. No changes to your model, no retraining, and only numpy as a dependency.
 
 ## Installation
 
@@ -22,7 +22,7 @@ At this time, this library is not published to pypi. I will update the README wh
 ## Quick start
 
 ```python
-from conformal import calibrate_classifier, ConformalClassifier
+from conforma import calibrate_classifier, ConformalClassifier
 
 # 1. Get your model's predicted probabilities on a held-out calibration set
 cal_probs = model.predict_proba(X_cal)  # shape: (n_examples, n_classes)

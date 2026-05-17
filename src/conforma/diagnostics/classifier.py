@@ -7,9 +7,9 @@ from typing import Any
 import numpy as np
 from numpy.typing import NDArray
 
-from conformal.calibration import calibrate_classifier
-from conformal.core import compute_p_values
-from conformal.diagnostics._common import (
+from conforma.calibration import calibrate_classifier
+from conforma.core import compute_p_values
+from conforma.diagnostics._common import (
     DiagnosticConfig,
     _CalibrationPlan,
     _CoverageStabilityResult,
@@ -121,7 +121,7 @@ def classifier_coverage_stability[F: np.floating[Any], I: np.integer[Any]](
     Examples
     --------
     >>> import numpy as np
-    >>> from conformal.diagnostics import classifier_coverage_stability, DiagnosticConfig
+    >>> from conforma.diagnostics import classifier_coverage_stability, DiagnosticConfig
     >>> probs = np.array([[0.9, 0.1]] * 30 + [[0.5, 0.5]] * 20)
     >>> labels = np.array([0] * 30 + [1] * 20)
     >>> config = DiagnosticConfig(sizes=[20, 40], n_repetitions=10, rng=42)

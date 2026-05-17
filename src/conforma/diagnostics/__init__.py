@@ -4,14 +4,14 @@ This module provides functions that help practitioners understand how
 calibration set size affects prediction quality.
 """
 
-from conformal.diagnostics._common import DiagnosticConfig
-from conformal.diagnostics.classifier import (
+from conforma.diagnostics._common import DiagnosticConfig
+from conforma.diagnostics.classifier import (
     ClassifierCalibrationPlan,
     ClassifierCoverageStability,
     classifier_calibration_plan,
     classifier_coverage_stability,
 )
-from conformal.diagnostics.regressor import (
+from conforma.diagnostics.regressor import (
     RegressorCalibrationPlan,
     RegressorCoverageStability,
     regressor_calibration_plan,

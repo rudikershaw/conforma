@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from conformal.regressor import ConformalRegressor
+from conforma.regressor import ConformalRegressor
 
 
 def test_calibration_must_be_1d_or_2d() -> None:

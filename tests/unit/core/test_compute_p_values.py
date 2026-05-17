@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from conformal.core import compute_p_values
+from conforma.core import compute_p_values
 from tests.unit.conftest import default_benchmark
 
 

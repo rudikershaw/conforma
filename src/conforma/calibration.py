@@ -10,7 +10,7 @@ from typing import Any
 import numpy as np
 from numpy.typing import NDArray
 
-from conformal.core import ONE_DIMENSION, TWO_DIMENSIONS
+from conforma.core import ONE_DIMENSION, TWO_DIMENSIONS
 
 
 def _calibrate[F: np.floating[Any], T: np.generic](
@@ -100,7 +100,7 @@ def calibrate_classifier[F: np.floating[Any], I: np.integer[Any]](
     Examples
     --------
     >>> import numpy as np
-    >>> from conformal.calibration import calibrate_classifier
+    >>> from conforma.calibration import calibrate_classifier
     >>> calibration_probabilities = np.array([[0.8, 0.1, 0.1],
     ...                                        [0.3, 0.6, 0.1],
     ...                                        [0.2, 0.3, 0.5]])
@@ -176,7 +176,7 @@ def calibrate_regressor[F: np.floating[Any]](
     Univariate regression:
 
     >>> import numpy as np
-    >>> from conformal.calibration import calibrate_regressor
+    >>> from conforma.calibration import calibrate_regressor
     >>> calibration_predictions = np.array([2.1, 5.3, 7.8])
     >>> true_values = np.array([2.0, 5.0, 8.0])
     >>> scores = calibrate_regressor(calibration_predictions, true_values)

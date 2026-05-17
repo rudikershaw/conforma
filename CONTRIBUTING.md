@@ -1,10 +1,10 @@
-# Contributing to conformal
+# Contributing to conforma
 
 ## What this project is
 
-`conformal` is a library for making conformal prediction accessible to ML practitioners who are not researchers. It has a deliberately narrow scope and a small API surface. Before opening a PR, it is worth understanding the principles that guide what gets included.
+`conforma` is a library for making conformal prediction accessible to ML practitioners who are not researchers. It has a deliberately narrow scope and a small API surface. Before opening a PR, it is worth understanding the principles that guide what gets included.
 
-**Framework agnostic.** Most ML uncertainty libraries are tied to a specific framework. We think that is a mistake. `conformal` accepts any callable that returns scores or predictions, so it works with scikit-learn, PyTorch, LightGBM, or anything else. The core depends only on numpy, and we intend to keep it that way.
+**Framework agnostic.** Most ML uncertainty libraries are tied to a specific framework. We think that is a mistake. `conforma` accepts any callable that returns scores or predictions, so it works with scikit-learn, PyTorch, LightGBM, or anything else. The core depends only on numpy, and we intend to keep it that way.
 
 **Minimal dependencies.** Every dependency is a maintenance burden and a potential source of breakage for users. numpy is the only runtime dependency, and we are not looking to add more. If a feature would require pulling in another package, it does not belong in the core.
 
@@ -24,8 +24,8 @@ We recommend using `uv run` to run any project commands, to maintain a consisten
 
 1. Fork the repository on GitHub, then clone your fork:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/conformal.git
-   cd conformal
+   git clone https://github.com/YOUR_USERNAME/conforma.git
+   cd conforma
    ```
 
 2. Install dependencies (including dev dependencies):

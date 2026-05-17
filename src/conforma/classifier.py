@@ -10,7 +10,7 @@ from typing import Any
 import numpy as np
 from numpy.typing import NDArray
 
-from conformal.core import ONE_DIMENSION, TWO_DIMENSIONS, compute_p_values
+from conforma.core import ONE_DIMENSION, TWO_DIMENSIONS, compute_p_values
 
 
 class ConformalClassifier[X, F: np.floating[Any]]:
@@ -32,7 +32,7 @@ class ConformalClassifier[X, F: np.floating[Any]]:
     Examples
     --------
     >>> import numpy as np
-    >>> from conformal import ConformalClassifier, calibrate_classifier
+    >>> from conforma import ConformalClassifier, calibrate_classifier
     >>> cal_probs = np.array([[0.8, 0.2], [0.6, 0.4], [0.3, 0.7], [0.9, 0.1]])
     >>> cal_labels = np.array([0, 0, 1, 0])
     >>> calibration = calibrate_classifier(cal_probs, cal_labels)
