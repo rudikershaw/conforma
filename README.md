@@ -4,7 +4,7 @@
 
 **Know when to trust your model's predictions.**
 
-[![Version 0.1.0](https://img.shields.io/badge/version-0.1.0-orange?style=for-the-badge)](https://github.com/rudikershaw/conforma)
+[![PyPI version](https://img.shields.io/pypi/v/conforma?style=for-the-badge)](https://pypi.org/project/conforma)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org)
 [![NumPy only](https://img.shields.io/badge/deps-numpy_only-013243?style=for-the-badge&logo=numpy&logoColor=white)](https://numpy.org)
 [![MIT License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)](LICENSE)
@@ -17,7 +17,9 @@ Conformal prediction is a technique for getting honest uncertainty estimates fro
 
 ## Installation
 
-At this time, this library is not published to pypi. I will update the README when it is published and available. 
+```sh
+python -m pip install conforma
+```
 
 ## Quick start
 
