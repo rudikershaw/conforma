@@ -1,4 +1,4 @@
-"""MNIST classification with pytorch without and conformal prediction (without the conforma wrapper classes)."""
+"""MNIST classification with pytorch and conformal prediction (without the conforma wrapper classes)."""
 
 from tempfile import gettempdir
 

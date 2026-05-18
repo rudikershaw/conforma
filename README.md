@@ -77,5 +77,5 @@ Yes. The coverage guarantee is a proven. The original proof comes from Vovk, Gam
 - [Full classification walkthrough (scikit-learn example)](docs/classification_walkthrough.md)
 - [Full regression walkthrough (scikit-learn example)](docs/regression_walkthrough.md)
 - [Diagnostics - Determining the best coverage guarantees](docs/diagnostics.md)
-- [Running conformal prediction without the wrappers](docs/no_wrappers.md)
+- [Running conformal prediction without the wrappers (pytorch example)](docs/no_wrappers.md)
 
