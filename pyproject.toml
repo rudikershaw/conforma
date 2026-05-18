@@ -46,6 +46,8 @@ test = [
 integration = [
     "pytest>=9.0.0",
     "scikit-learn>=1.6.0",
+    "torch>=2.12.0",
+    "torchvision>=0.27.0",
 ]
 
 [tool.ruff]
