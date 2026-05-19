@@ -123,7 +123,7 @@ def compute_quantile[F: np.floating[Any]](
         Shape: ``(n_calibration,)`` for univariate or
         ``(n_calibration, n_outputs)`` for multi-output.
     coverage : float
-        Target coverage level in (0, 1].
+        Target coverage level in (0, 1).
 
     Returns
     -------
@@ -134,7 +134,7 @@ def compute_quantile[F: np.floating[Any]](
     Raises
     ------
     ValueError
-        If coverage is outside (0, 1] or the calibration set is too
+        If coverage is outside (0, 1) or the calibration set is too
         small to achieve the requested coverage.
 
     Examples
@@ -146,8 +146,8 @@ def compute_quantile[F: np.floating[Any]](
     array([0.3, 0.4])
 
     """
-    if coverage <= 0 or coverage > 1:
-        msg = f"coverage must be in (0, 1], got {coverage}."
+    if coverage <= 0 or coverage >= 1:
+        msg = f"coverage must be in (0, 1), got {coverage}."
         raise ValueError(msg)
 
     n_cal = calibration_scores.shape[0]

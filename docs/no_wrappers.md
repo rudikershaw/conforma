@@ -6,7 +6,7 @@ The following code is an example of using conforma to calibrate a pytorch NN cla
 
 <!-- INSERT_CODE:tests/integration/test_no_wrapper_workflow.py -->
 ```py
-"""MNIST classification with pytorch without and conformal prediction (without the conforma wrapper classes)."""
+"""MNIST classification with pytorch and conformal prediction (without the conforma wrapper classes)."""
 
 from tempfile import gettempdir
 

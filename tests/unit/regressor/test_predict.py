@@ -84,4 +84,4 @@ def test_predict_coverage_validation(wrapper: ConformalRegressor) -> None:
 def test_predict_coverage_too_high_for_calibration_size(wrapper: ConformalRegressor) -> None:
     """Test that unreachable coverage raises with a helpful message."""
     with pytest.raises(ValueError, match="Calibration set too small"):
-        wrapper.predict(np.array([4.0]), coverage=1.0)
+        wrapper.predict(np.array([4.0]), coverage=0.9999)

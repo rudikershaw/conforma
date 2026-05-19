@@ -67,7 +67,7 @@ class ConformalClassifier[X, F: np.floating[Any]]:
         inputs : X
             Input data, passed directly to ``predict_fn``.
         coverage : float
-            Target coverage level in (0, 1]. Classes with p-values at or
+            Target coverage level in (0, 1). Classes with p-values at or
             above this threshold are included in the prediction set.
 
         Returns
@@ -76,8 +76,8 @@ class ConformalClassifier[X, F: np.floating[Any]]:
             Boolean array of shape ``(n_examples, n_classes)``.
 
         """
-        if coverage <= 0 or coverage > 1:
-            msg = f"coverage must be in (0, 1], got {coverage}."
+        if coverage <= 0 or coverage >= 1:
+            msg = f"coverage must be in (0, 1), got {coverage}."
             raise ValueError(msg)
         return self.predict_p_values(inputs) >= 1 - coverage
 
