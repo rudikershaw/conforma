@@ -54,7 +54,7 @@ The calibration-plan helpers then choose the best empirical coverage that satisf
 
 ## Typical usage
 
-1. Build a `DiagnosticConfig` for the sizes, repetitions, and RNG.
+1. Optionally, build a `DiagnosticConfig` to specify the sizes, repetitions, or RNG.
 2. Use `classifier_coverage_stability` or `regressor_coverage_stability` to inspect how diagnostics change with calibration size.
 3. Use `classifier_calibration_plan` or `regressor_calibration_plan` to get a recommended coverage and calibration size for production use.
 

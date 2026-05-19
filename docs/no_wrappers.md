@@ -1,6 +1,6 @@
 # Performing Conformal Prediction without the Wrapper class
 
-The `conforma` wrappers provide the plumbing for conformal prediction steps, data & input validation, and the means to ensure your data precision is maintained. It is possible, using this library, to perform comformal prediction without using the wrapper classes (ConformalClassifier or ConformalRegressor). You may choose to do this to gain more control over how predictions are made. For example, to change the nonconformity score function, to produce p-values alongside predictions each time, or to introduce custom validation per prediction.
+The `conforma` wrappers provide the plumbing for conformal prediction steps, data & input validation, and the means to ensure your data precision is maintained. It is possible, using this library, to perform conformal prediction without using the wrapper classes (ConformalClassifier or ConformalRegressor). You may choose to do this to gain more control over how predictions are made. For example, to change the nonconformity score function, to produce p-values alongside predictions each time, or to introduce custom validation per prediction.
 
 The following code is an example of using conforma to calibrate a pytorch NN classifier from the project's integration tests. You can find the code file in this project under [tests/integration/test_no_wrapper_workflow.py](tests/integration/test_no_wrapper_workflow.py). After reading through the example below, you can find a discussion of what each step achieves below the code example.
 
