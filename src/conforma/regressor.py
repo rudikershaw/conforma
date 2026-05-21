@@ -61,7 +61,7 @@ class ConformalRegressor[X, F: np.floating[Any]]:
         inputs : X
             Input data, passed directly to ``predict_fn``.
         coverage : float
-            Target coverage level in (0, 1]. The returned interval is
+            Target coverage level in (0, 1). The returned interval is
             guaranteed to contain the true value at least this fraction
             of the time under exchangeability.
 
