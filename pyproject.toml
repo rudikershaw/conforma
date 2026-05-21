@@ -1,6 +1,6 @@
 [project]
 name = "conforma"
-version = "1.0.0"
+version = "1.1.0.dev0"
 description = "Simple, fast, and framework agnostic uncertainty quantification for knowing when to trust your model's predictions."
 readme = "README.md"
 authors = [
