@@ -4,7 +4,7 @@
 
 `conforma` is a library for making conformal prediction accessible to ML practitioners who are not researchers. It has a deliberately narrow scope and a small API surface. Before opening a PR, it is worth understanding the principles that guide what gets included.
 
-**Framework agnostic.** Most ML uncertainty libraries are tied to a specific framework. We think that is a mistake. `conforma` accepts any callable that returns scores or predictions, so it works with scikit-learn, PyTorch, LightGBM, or anything else. The core depends only on numpy, and we intend to keep it that way.
+**Framework agnostic.** Most ML uncertainty libraries are tied to a specific framework. We think that is a mistake. `conforma` accepts any callable that returns scores or predictions, so it works with scikit-learn, PyTorch, LightGBM, or anything else.
 
 **Minimal dependencies.** Every dependency is a maintenance burden and a potential source of breakage for users. numpy is the only runtime dependency, and we are not looking to add more. If a feature would require pulling in another package, it does not belong in the core.
 
@@ -44,4 +44,4 @@ This project uses [Nox](https://nox.thea.codes/) for task running. All developme
 
 ## Submitting Changes
 
-Create a branch from `main`, make your changes, and open a pull request. Before submitting, make sure `uv run nox` passes. This runs linting, type checking, and the full test suite. If it passes, your PR is ready for review.
+If you are fixing a backward compatible bug then create a branch from `main`, otherwise create your branch off `develop`. Then make your changes, and open a pull request. Before submitting, make sure `uv run nox` passes. This runs linting, type checking, and the full test suite. If it passes, your PR is ready for review.
