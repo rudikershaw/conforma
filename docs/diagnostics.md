@@ -45,7 +45,7 @@ The `conforma.diagnostics` module provides tools for understanding how calibrati
 
 ## How it works
 
-Both stability and calibration-plan diagnostics perform repeated subsampling of the provided calibration data. For each sampled calibration size they train a conformal calibration function and evaluate:
+Both stability and calibration-plan diagnostics perform repeated subsampling of the provided calibration data. For each sampled calibration size they produce a conformal calibration function and evaluate:
 
 - empirical coverage on held-out test examples
 - set size for classifiers / interval width for regressors
