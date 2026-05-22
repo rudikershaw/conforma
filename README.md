@@ -59,9 +59,9 @@ Each value is a conformal p-value measuring how plausible that class is. Higher 
 
 Conforma is designed primarily to be simple and broadly applicable. Conformal Prediction comes in many different forms, each tailored to specific problem spaces. By tailoring which non-conformity scores, quantile selection strategies, and prediction set selection methods are used you can get tighter coverage or smaller (or more adaptive) prediction sets (or ranges). Conforma doesn't do any of that. This library picks the most broadly applicable sensible defaults for each of these areas, so that non-experts (or just folks in a hurry) can quickly apply conformal prediction to their model output.
 
-If you are in a position where you have the time and expertise to delicately select which strategy you want to use for your specific model, then the pre-existing libraries are probably a better fit for you.
+If you are in a position where you have the time and expertise to carefully select strategies for your specific model, existing libraries may be a better fit.
 
-Conforma offers a simple, opinionated, framework agnostic approach using sensible defaults that doesn't required your model to be trained in any particular way. It supports conformal prediction for general classifiers/regressors, and provides an API for selecting calibration set sizes or showing what the approximate maximum coverage you can get for a maximum average prediction set/range size. 
+Conforma offers a simple, opinionated, framework agnostic approach using sensible defaults that doesn't require your model to be trained in any particular way. It supports conformal prediction for general classifiers/regressors, and provides an API for selecting calibration set sizes or showing what the approximate maximum coverage you can get for a maximum average prediction set/range size. 
 
 ## FAQ
 

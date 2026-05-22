@@ -69,7 +69,7 @@ def test_diabetes_regression():
 ```
 <!--CODE_END -->
 
-First we pull in our dataset, split our data into training and a reserve sets, and then train our model on the training set. This is all achieved outside of the scope of the conformal library (in this case using scikit-learn).
+First we pull in our dataset, split our data into training and reserve sets, and then train our model on the training set. This is all achieved outside of the scope of the conformal library (in this case using scikit-learn).
 
 Now, we need to choose the size of our calibration set and the coverage level. Typically calibration sets can be effective with a surprisingly small number of entries, and the best coverage depends on your desired interval width. Rather than choosing the calibration set size and coverage manually through trial and error, this example uses the `regressor_calibration_plan` function to recommend the best achievable coverage given a maximum average interval width.
 

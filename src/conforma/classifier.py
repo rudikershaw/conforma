@@ -68,7 +68,7 @@ class ConformalClassifier[X, F: np.floating[Any]]:
             Input data, passed directly to ``predict_fn``.
         coverage : float
             Target coverage level in (0, 1). Classes with p-values at or
-            above this threshold are included in the prediction set.
+            above ``1 - coverage`` are included in the prediction set.
 
         Returns
         -------
