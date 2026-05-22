@@ -1,6 +1,6 @@
 <div align="center">
 
-# conforma
+# Conforma
 
 **Know when to trust your model's predictions.**
 
@@ -55,6 +55,14 @@ p_values = wrapper.predict_p_values(X_test)
 
 Each value is a conformal p-value measuring how plausible that class is. Higher means the model was less surprised. A class enters the prediction set at coverage level `c` when its p-value is at least `1 - c`. This is useful when you want to rank classes by plausibility, or apply different coverage thresholds after the fact without re-running the model.
 
+## Why Conforma?
+
+Conforma is designed primarily to be simple and broadly applicable. Conformal Prediction comes in many different forms, each tailored to specific problem spaces. By tailoring which non-conformity scores, quantile selection strategies, and prediction set selection methods are used you can get tighter coverage or smaller (or more adaptive) prediction sets (or ranges). Conforma doesn't do any of that. This library picks the most broadly applicable sensible defaults for each of these areas, so that non-experts (or just folks in a hurry) can quickly apply conformal prediction to their model output.
+
+If you are in a position where you have the time and expertise to delicately select which strategy you want to use for your specific model, then the pre-existing libraries are probably a better fit for you.
+
+Conforma offers a simple, opinionated, framework agnostic approach using sensible defaults that doesn't required your model to be trained in any particular way. It supports conformal prediction for general classifiers/regressors, and provides an API for selecting calibration set sizes or showing what the approximate maximum coverage you can get for a maximum average prediction set/range size. 
+
 ## FAQ
 
 **What is conformal prediction?**
@@ -67,7 +75,7 @@ If your model can produce per-class scores (probabilities, logits, etc.) for cla
 More calibration data means tighter prediction sets. A few hundred examples is a reasonable starting point, but even 50 can be useful. The library will raise an error if your calibration set is too small for your requested coverage level.
 
 **What's the catch?**
-The guarantee relies on one assumption: calibration data and test data are drawn from the same distribution. If the world changes after calibration (new user behaviour, different sensor, etc.), you should recalibrate.
+The guarantee relies on one assumption: calibration data and test data are drawn from exchangeable distributions. If the world changes after calibration (new user behaviour, different sensor, etc.), you should recalibrate.
 
 **Is this really guaranteed? Where's the proof?**
 Yes. The coverage guarantee is proven. The original proof comes from Vovk, Gammerman, and Shafer in *Algorithmic Learning in a Random World* (2005). If you want something shorter, Shafer and Vovk also wrote *"A Tutorial on Conformal Prediction"* (2008) in the Journal of Machine Learning Research. Fair warning, neither is light reading. For a more practical introduction, Angelopoulos and Bates wrote *"A Gentle Introduction to Conformal Prediction and Distribution-Free Uncertainty Quantification"* (2022), which is an easier read.
