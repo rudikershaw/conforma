@@ -20,8 +20,8 @@ def compute_p_values[F: np.floating[Any]](
 ) -> NDArray[F]:
     """Compute conformal p-values by comparing prediction scores against calibration scores.
 
-    For each prediction nonconformity score, the p-value is computed. A higher 
-    p-value means the prediction is more consistent with the calibration data 
+    For each prediction nonconformity score, the p-value is computed. A higher
+    p-value means the prediction is more consistent with the calibration data
     (the model was less surprised).
 
     Parameters
@@ -41,7 +41,7 @@ def compute_p_values[F: np.floating[Any]](
     -------
     NDArray
         P-values with the same shape as prediction_scores.
-        Each value is in [0, 1] and represents a p-value 
+        Each value is in [0, 1] and represents a p-value
         for the corresponding prediction score.
 
     Examples
